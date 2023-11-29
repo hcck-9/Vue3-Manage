@@ -24,7 +24,7 @@
                       <span class="forget-password-button" @click="openForget">忘记密码</span>
                     </div>
                     <div class="footer-button">
-                      <el-button type="primary">登录</el-button>
+                      <el-button type="primary" @click="Login">登录</el-button>
                     </div>
                     <div class="footer-go-register">
                       还没有账号？
@@ -49,7 +49,7 @@
                   </el-form-item>
                   <div class="footer-wrapped">
                     <div class="footer-button">
-                      <el-button type="primary">注册</el-button>
+                      <el-button type="primary" @click="Register">注册</el-button>
                     </div>
                   </div>
                 </el-form>
@@ -78,6 +78,14 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import forgetPassword from './components/forget_password.vue'
+// 导入登录注册接口
+import { login, register } from '../../api/login'
+// 消息提示
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+// useRouter
+const router = useRouter()
+
 const activeName = ref('login')
 
 interface formData {
@@ -86,8 +94,8 @@ interface formData {
   repassword?: string
 }
 const loginData: formData = reactive({
-  account: null,
-  password: ''
+  account: 123123,
+  password: 'w123123'
 })
 
 const registerData: formData = reactive({
@@ -96,6 +104,41 @@ const registerData: formData = reactive({
   repassword: ''
 })
 
+// 注册
+const Register = async () => {
+  if (registerData.password === registerData.repassword) {
+    const res = await register(registerData)
+    // console.log(res)
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+      activeName.value = 'login'
+    } else {
+      ElMessage.error(res.data.message)
+    }
+  } else {
+    ElMessage.error('两次密码输入不一致')
+  }
+}
+// 登录
+const Login = async () => {
+  const res = await login(loginData)
+  // console.log(res)
+  const { token } = res.data
+  if (res.data.status === 0) {
+    ElMessage({
+      message: res.data.message,
+      type: 'success'
+    })
+    localStorage.setItem('token', token)
+    // 跳转
+    router.push('/home')
+  } else {
+    ElMessage.error(res.data.message)
+  }
+}
 // 忘记密码对话框
 const forgetPasswordDialog = ref()
 const openForget = () => {
