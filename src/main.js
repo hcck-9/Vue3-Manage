@@ -9,6 +9,9 @@ import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // 导入 element-plus icon
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// 导入svg图标
+import 'virtual:svg-icons-register'
+
 // 创建实例
 const app = createApp(App)
 

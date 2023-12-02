@@ -2,13 +2,21 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 import { resolve } from 'path'
-
+// 导入svgIcon 插件
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // eslint-disable-next-line no-undef
 const pathReslove = (dir) => resolve(__dirname, dir)
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    createSvgIconsPlugin({
+      // eslint-disable-next-line no-undef
+      iconDirs: [resolve(process.cwd(), 'src/assets/svg')],
+      symbolId: 'icon-[dir]-[name]'
+    })
+  ],
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'scss',

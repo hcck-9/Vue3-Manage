@@ -17,7 +17,12 @@
                     <el-input v-model="loginData.account" placeholder="请输入账号" />
                   </el-form-item>
                   <el-form-item label="密码">
-                    <el-input v-model="loginData.password" placeholder="请输入密码" />
+                    <el-input
+                      v-model="loginData.password"
+                      type="password"
+                      placeholder="请输入密码"
+                      show-password
+                    />
                   </el-form-item>
                   <div class="footer-wrapped">
                     <div class="forget-password">
@@ -40,12 +45,19 @@
                   </el-form-item>
                   <el-form-item label="密码">
                     <el-input
+                      type="password"
                       v-model="registerData.password"
                       placeholder="密码需长度6-12位含字母数字"
+                      show-password
                     />
                   </el-form-item>
                   <el-form-item label="确认密码">
-                    <el-input v-model="registerData.repassword" placeholder="请再次输入密码" />
+                    <el-input
+                      v-model="registerData.repassword"
+                      type="password"
+                      placeholder="请再次输入密码"
+                      show-password
+                    />
                   </el-form-item>
                   <div class="footer-wrapped">
                     <div class="footer-button">

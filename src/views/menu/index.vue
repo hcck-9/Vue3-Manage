@@ -2,7 +2,7 @@
   <div class="common-layout">
     <el-container>
       <el-aside width="200px">
-        <div class="title">DDDDDD</div>
+        <div class="title">通用后台管理系统</div>
         <el-menu default-active="home" class="el-menu-vertical-demo" router>
           <el-menu-item index="home">
             <el-icon><House /></el-icon>
@@ -62,7 +62,7 @@
             <el-icon><Notebook /></el-icon>
             <span>登录日志</span>
           </el-menu-item>
-          <el-menu-item index="9">
+          <el-menu-item index="set">
             <el-icon><Setting /></el-icon>
             <span>系统设置</span>
           </el-menu-item>
@@ -70,7 +70,7 @@
       </el-aside>
       <el-container>
         <el-header>
-          <span class="header-left-content">DDDDDDDDDDDDDDDD</span>
+          <span class="header-left-content">尊敬的 name 欢迎您登录本系统</span>
           <div class="header-right-content">
             <el-icon><Message /></el-icon>
             <div class="block">
@@ -180,6 +180,7 @@ const back = () => {
 .el-main {
   --el-main-padding: 0;
   background-color: #f3f4fa;
+  // padding: 20px 25px;
 }
 
 // 无子菜单的
