@@ -11,6 +11,8 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 导入svg图标
 import 'virtual:svg-icons-register'
+// 导入 pinia
+import pinia from './store'
 
 // 创建实例
 const app = createApp(App)
@@ -23,4 +25,4 @@ app.use(ElementPlus, {
   locale: zhCn
 })
 
-app.use(router).mount('#app')
+app.use(router).use(pinia).mount('#app')

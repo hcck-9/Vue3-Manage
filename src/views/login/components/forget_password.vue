@@ -92,7 +92,7 @@ const state = reactive({
 
 // 下一步
 const verifyAccountAndEmail = async (formEl: FormInstance | undefined) => {
-  console.log(formEl)
+  // console.log(formEl)
 
   if (!formEl) return
   await formEl.validate(async (valid) => {

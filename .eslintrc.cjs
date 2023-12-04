@@ -17,5 +17,8 @@ module.exports = {
     'vue/comment-directive': 'off',
     // 关闭名称校验
     'vue/multi-word-component-names': 'off'
+  },
+  paths: {
+    '@/*': ['src/*']
   }
 }

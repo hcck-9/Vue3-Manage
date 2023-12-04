@@ -97,6 +97,9 @@ import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 // useRouter
 const router = useRouter()
+// 引入store
+import { useUserInfoStore } from '../../store/userinfo'
+const store = useUserInfoStore()
 
 const activeName = ref('login')
 
@@ -138,13 +141,16 @@ const Register = async () => {
 const Login = async () => {
   const res = await login(loginData)
   // console.log(res)
-  const { token } = res.data
   if (res.data.status === 0) {
     ElMessage({
       message: res.data.message,
       type: 'success'
     })
+    const { token } = res.data
+    const { id } = res.data.results
+    localStorage.setItem('id', id)
     localStorage.setItem('token', token)
+    store.userInfor(id)
     // 跳转
     router.push('/home')
   } else {
