@@ -13,14 +13,14 @@
     <!-- 栅格布局 -->
     <div class="layout-wrapped">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="(item, index) in companyIntroduceData">
+        <el-col
+          :span="6"
+          v-for="(item, index) in companyIntroduceData"
+          @click="openIntroduce(item.id)"
+        >
           <div class="company-message-area">
             <span>{{ item.set_name }}</span>
-            <div
-              v-html="item.set_text"
-              class="company-introduce"
-              @click="openIntroduce(item.id)"
-            ></div>
+            <div v-html="item.set_text" class="company-introduce"></div>
           </div>
         </el-col>
       </el-row>

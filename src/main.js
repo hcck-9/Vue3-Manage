@@ -13,7 +13,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'virtual:svg-icons-register'
 // 导入 pinia
 import pinia from './store'
-
+// 导入全局样式
+import '@/assets/css/common.scss'
 // 创建实例
 const app = createApp(App)
 
