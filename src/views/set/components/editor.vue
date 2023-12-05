@@ -29,10 +29,10 @@
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { onBeforeUnmount, ref, shallowRef, reactive } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import { bus } from '../../../utils/mitt.js'
+import { bus } from '@/utils/mitt.js'
 import { ElMessage } from 'element-plus'
 // changecompanyintro
-import { changeCompanyIntroduce, getCompanyIntroduce } from '../../../api/setting'
+import { changeCompanyIntroduce, getCompanyIntroduce } from '@/api/setting.js'
 const title = ref()
 bus.on('editorTitle', async (id: number) => {
   if (id == 1) {

@@ -33,7 +33,7 @@ import { ElMessage } from 'element-plus'
 
 import type { FormInstance, FormRules } from 'element-plus'
 
-import { changePassword } from '../../../api/userinfo'
+import { changePassword } from '@/api/userinfo.js'
 
 import { useRouter } from 'vue-router'
 // useRouter
