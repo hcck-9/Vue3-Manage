@@ -9,11 +9,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, ref, shallowRef, reactive } from 'vue'
-import { bus } from '../../../utils/mitt.js'
+import { onBeforeUnmount, ref, reactive } from 'vue'
+import { bus } from '@/utils/mitt.js'
 
 // getCompanyIntroduce
-import { getCompanyIntroduce } from '../../../api/setting'
+import { getCompanyIntroduce } from '@/api/setting.js'
+
+// 取消订阅/监听
+onBeforeUnmount(() => {
+  bus.all.clear()
+})
 
 const title = ref()
 // 内容 HTML
@@ -51,11 +56,6 @@ const open = () => {
 }
 defineExpose({
   open
-})
-
-// 取消订阅/监听
-onBeforeUnmount(() => {
-  bus.all.clear()
 })
 </script>
 <style scoped lang="scss">

@@ -52,9 +52,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import breadCrumb from '../../components/bread-crumb.vue'
-import { getAllSwiper, getAllCompanyIntroduce } from '../../api/setting'
-import { bus } from '../../utils/mitt.js'
+import breadCrumb from '@/components/bread-crumb.vue'
+import { getAllSwiper, getAllCompanyIntroduce } from '@/api/setting.js'
+import { bus } from '@/utils/mitt.js'
 import introduce from './components/introduce.vue'
 // 面包屑
 const breadcrumb = ref()
@@ -78,6 +78,7 @@ const companyIntroduceData = ref([])
 const getAllCompanyintroduce = async () => {
   const res = await getAllCompanyIntroduce()
   companyIntroduceData.value = res.data
+  // console.log(companyIntroduceData.value)
 }
 getAllCompanyintroduce()
 

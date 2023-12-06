@@ -9,7 +9,7 @@
         :mode="mode"
       />
       <Editor
-        style="height: 500px; overflow-y: hidden"
+        style="height: 300px; overflow-y: hidden"
         v-model="valueHtml"
         :defaultConfig="editorConfig"
         :mode="mode"
@@ -33,31 +33,36 @@ import { bus } from '@/utils/mitt.js'
 import { ElMessage } from 'element-plus'
 // changecompanyintro
 import { changeCompanyIntroduce, getCompanyIntroduce } from '@/api/setting.js'
+
 const title = ref()
+// 内容 HTML
+const valueHtml = ref()
 bus.on('editorTitle', async (id: number) => {
   if (id == 1) {
     title.value = '编辑公司介绍'
-    valueHtml.value = await getCompanyIntroduce('公司介绍')
+    const res = await getCompanyIntroduce('公司介绍')
+    valueHtml.value = res.data
   }
   if (id == 2) {
     title.value = '编辑公司架构'
-    valueHtml.value = await getCompanyIntroduce('公司架构')
+    const res = await getCompanyIntroduce('公司架构')
+    valueHtml.value = res.data
   }
   if (id == 3) {
     title.value = '编辑公司战略'
-    valueHtml.value = await getCompanyIntroduce('公司战略')
+    const res = await getCompanyIntroduce('公司战略')
+    valueHtml.value = res.data
   }
   if (id == 4) {
     title.value = '编辑高层介绍'
-    valueHtml.value = await getCompanyIntroduce('高层介绍')
+    const res = await getCompanyIntroduce('高层介绍')
+    valueHtml.value = res.data
   }
 })
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 // mode
 const mode = ref('default')
-// 内容 HTML
-const valueHtml = ref()
 const toolbarConfig = {
   excludeKeys: []
 }
@@ -122,13 +127,6 @@ const yes = async () => {
   }
 }
 
-// 组件销毁时，也及时销毁编辑器
-onBeforeUnmount(() => {
-  const editor = editorRef.value
-  if (editor == null) return
-  editor.destroy()
-})
-
 const handleCreated = (editor: any) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
@@ -150,8 +148,11 @@ defineExpose({
   open
 })
 
-// 取消订阅/监听
+// 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
+  const editor = editorRef.value
+  if (editor == null) return
+  editor.destroy()
   bus.all.clear()
 })
 </script>

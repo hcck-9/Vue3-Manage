@@ -76,9 +76,9 @@
             <span>公司名称</span>
             <div class="account-info-content">
               <el-input v-model="companyName" />
-              <el-button type="primary" class="btn" @click="changeCompanyname"
-                >编辑公司名称</el-button
-              >
+              <el-button type="primary" class="btn" @click="changeCompanyname">
+                编辑公司名称
+              </el-button>
             </div>
           </div>
           <div class="account-info-wrapped">
@@ -131,7 +131,38 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="其他设置" name="fourth">其他设置</el-tab-pane>
+        <el-tab-pane label="其他设置" name="fourth">
+          <div class="other-set">
+            <div class="department-set">
+              <span>部门设置</span>
+              <el-tag
+                v-for="tag in dynamicTags"
+                :key="tag"
+                class="mx-1"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <el-input
+                v-if="inputVisible"
+                ref="InputRef"
+                v-model="inputValue"
+                class="ml-1 w-20"
+                size="small"
+                @keyup.enter="handleInputConfirm"
+                @blur="handleInputConfirm"
+              />
+              <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
+                + New Tag
+              </el-button>
+            </div>
+            <div class="product-set">
+              <span>产品设置</span>
+            </div>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -140,9 +171,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import breadCrumb from '../../components/bread-crumb.vue'
-
+import { ref, nextTick, toRaw } from 'vue'
+import breadCrumb from '@/components/bread-crumb.vue'
+// tag
+import { ElInput } from 'element-plus'
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
@@ -158,14 +190,20 @@ import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps } from 'element-plus'
 
 // 引入store
-import { useUserInfoStore } from '../../store/userinfo'
+import { useUserInfoStore } from '@/store/userinfo.js'
 const userInfoStore = useUserInfoStore()
 
-import { bindAccount, changeName, changeSex, changeEmail } from '../../api/userinfo'
+import { bindAccount, changeName, changeSex, changeEmail } from '@/api/userinfo.js'
 
-import { getAllSwiper, getCompanyName, changeCompanyName } from '../../api/setting'
+import {
+  getAllSwiper,
+  getCompanyName,
+  changeCompanyName,
+  setDepartment,
+  getDepartment
+} from '@/api/setting.js'
 
-import { bus } from '../../utils/mitt.js'
+import { bus } from '@/utils/mitt.js'
 
 import changePassword from './components/change_password.vue'
 
@@ -298,6 +336,53 @@ getAllswiper()
 const handleSwiperSuccess: UploadProps['onSuccess'] = (response) => {
   getAllswiper()
 }
+
+// 其他设置
+const inputValue = ref('')
+const dynamicTags = ref([])
+const inputVisible = ref(false)
+const InputRef = ref<InstanceType<typeof ElInput>>()
+
+// 删除部门执行的函数
+const handleClose = async (tag: string) => {
+  dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+  const res = await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+  if (res.data.status === 0) {
+    ElMessage({
+      message: res.data.message,
+      type: 'success'
+    })
+  }
+}
+// 点击按钮出现输入框
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+// 输入完成后执行函数
+const handleInputConfirm = async () => {
+  if (inputValue.value) {
+    dynamicTags.value.push(inputValue.value)
+    const res = await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+    }
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
+
+// 获取部门信息
+const getDepartmentData = async () => {
+  const res = await getDepartment()
+  dynamicTags.value = res.data
+}
+getDepartmentData()
 </script>
 
 <style scoped lang="scss">
@@ -361,6 +446,25 @@ const handleSwiperSuccess: UploadProps['onSuccess'] = (response) => {
       img {
         width: 256px;
         height: 72px;
+      }
+    }
+  }
+  // 其他设置
+  .other-set {
+    padding-left: 50px;
+    font-size: 14px;
+
+    .department-set {
+      margin-bottom: 24px;
+
+      span {
+        margin-right: 24px;
+      }
+    }
+
+    .product-set {
+      span {
+        margin-right: 24px;
       }
     }
   }

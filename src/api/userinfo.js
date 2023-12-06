@@ -153,6 +153,18 @@ export const searchUser = (account, identity) => {
   })
 }
 
+// 通过部门对用户搜索
+export const searchUserByDepartment = (department, identity) => {
+  return instance({
+    url: '/user/searchUserByDepartment',
+    method: 'POST',
+    data: {
+      department,
+      identity
+    }
+  })
+}
+
 // 冻结用户
 export const banUser = (id) => {
   return instance({
@@ -188,5 +200,23 @@ export const deleteUser = (id, account) => {
     url: '/user/deleteUser',
     method: 'POST',
     data: { id, account }
+  })
+}
+
+// 获取对应身份的一个总人数
+export const getAdminListLength = (identity) => {
+  return instance({
+    url: '/user/getAdminListLength',
+    method: 'POST',
+    data: { identity }
+  })
+}
+
+// 监听换页返回数据
+export const returnListData = (pager, identity) => {
+  return instance({
+    url: '/user/returnListData',
+    method: 'POST',
+    data: { pager, identity }
   })
 }
