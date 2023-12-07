@@ -18,12 +18,12 @@
               <span>用户管理</span>
             </template>
             <el-menu-item-group title="管理员管理">
-              <el-menu-item index="product_manage">产品管理员</el-menu-item>
-              <el-menu-item index="users_manage">用户管理员</el-menu-item>
-              <el-menu-item index="message_manage">消息管理员</el-menu-item>
+              <el-menu-item index="user_product_manage">产品管理员</el-menu-item>
+              <el-menu-item index="user_message_manage">用户管理员</el-menu-item>
+              <el-menu-item index="user_users_manage">消息管理员</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="员工管理">
-              <el-menu-item index="user_list">用户列表</el-menu-item>
+              <el-menu-item index="user_user_list">用户列表</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
           <el-sub-menu index="4">
@@ -32,7 +32,7 @@
               <span>产品管理</span>
             </template>
             <el-menu-item-group title="入库管理">
-              <el-menu-item index="4-1">产品列表</el-menu-item>
+              <el-menu-item index="product_product_manage">产品列表</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="出库管理">
               <el-menu-item index="4-2">出库列表</el-menu-item>
@@ -120,13 +120,12 @@ const back = () => {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 // 侧边栏
 .el-aside {
   height: 100vh;
   background: #2b303b;
   width: 210px;
-  // 隐藏滚动条
   overflow: hidden;
 
   // 菜单
@@ -135,6 +134,7 @@ const back = () => {
     width: 210px;
     height: 100vh;
     border-right: 0px;
+    overflow-y: auto;
   }
 
   // 标题
@@ -149,8 +149,11 @@ const back = () => {
   .el-menu-item {
     color: #fff;
   }
-}
 
+  // .el-sub-menu__title {
+  // 	color: #fff;
+  // }
+}
 .el-header {
   display: flex;
   height: 55px;
@@ -180,7 +183,6 @@ const back = () => {
 .el-main {
   --el-main-padding: 0;
   background-color: #f3f4fa;
-  // padding: 20px 25px;
 }
 
 // 无子菜单的
@@ -203,4 +205,17 @@ const back = () => {
 :deep(.el-dropdown-link) {
   cursor: pointer;
 }
+
+// :deep(.el-aside) {
+//   overflow: hidden auto;
+//   scrollbar-width: thin; /* 定义滚动条的宽度 */
+//   scrollbar-color: transparent transparent; /* 定义滚动条的颜色 */
+// }
+
+// /* 隐藏滚动条 */
+// :deep(.el-aside::-webkit-scrollbar) {
+//   width: 0; /* 定义滚动条宽度 */
+//   height: 0;
+//   background-color: transparent; /* 滚动条背景颜色 */
+// }
 </style>

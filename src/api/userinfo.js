@@ -130,6 +130,15 @@ export const changeIdentityToUser = (id) => {
 }
 
 // 对用户进行赋权
+export const changeIdentityToAdmin = (id, identity) => {
+  return instance({
+    url: '/user/changeIdentityToAdmin',
+    method: 'POST',
+    data: { id, identity }
+  })
+}
+
+// 对用户进行赋权
 export const 对用户进行赋权 = (id, identity) => {
   return instance({
     url: '/user/changeIdentityToUser',

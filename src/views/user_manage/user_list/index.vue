@@ -35,7 +35,13 @@
       </div>
       <!-- 表格内容 -->
       <div class="table-content">
-        <el-table ref="singleTableRef" :data="tableData" highlight-current-row style="width: 100%">
+        <el-table
+          ref="singleTableRef"
+          :data="tableData"
+          highlight-current-row
+          style="width: 100%"
+          @row-dblclick="openEditUserInfo"
+        >
           <el-table-column type="index" width="50" />
           <el-table-column property="account" label="账号" />
           <el-table-column property="name" label="姓名" width="90px" />
@@ -62,8 +68,12 @@
           <el-table-column label="操作">
             <template #default="{ row }">
               <div>
-                <el-button type="primary" @click="banuser(row.id)">冻结</el-button>
-                <el-button type="success" @click="hotuser(row.id)">解冻</el-button>
+                <el-button type="primary" @click="banuser(row.id)" :disabled="row.status == 1"
+                  >冻结</el-button
+                >
+                <el-button type="success" @click="hotuser(row.id)" :disabled="row.status == 0"
+                  >解冻</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -83,6 +93,7 @@
       />
     </div>
   </div>
+  <userinfo ref="EditUserInfo"></userinfo>
 </template>
 
 <script setup lang="ts">
@@ -101,7 +112,8 @@ import {
   banUser
 } from '@/api/userinfo.js'
 import { getDepartment } from '@/api/setting.js'
-
+import { bus } from '@/utils/mitt.js'
+import userinfo from '../components/userInfo.vue'
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
@@ -135,6 +147,14 @@ const searchAdmin = async () => {
   }
 }
 
+// 用户信息框
+const EditUserInfo = ref()
+const openEditUserInfo = (row: any) => {
+  // 第一个参数是标记，第二个是参数
+  bus.emit('userID', row)
+  EditUserInfo.value.open()
+}
+
 // 通过部门对用户搜索
 const searchForDepartment = async () => {
   const res = await searchUserByDepartment(department.value, identity.value)
@@ -158,8 +178,9 @@ const banuser = async (id) => {
       message: res.data.message,
       type: 'success'
     })
+    const result = await returnListData(paginationData.currentPage, identity.value)
+    tableData.value = result.data
   }
-  getAdminlist()
 }
 // 解冻用户
 const hotuser = async (id) => {
@@ -169,9 +190,22 @@ const hotuser = async (id) => {
       message: res.data.message,
       type: 'success'
     })
+    const result = await returnListData(paginationData.currentPage, identity.value)
+    tableData.value = result.data
   }
-  getAdminlist()
 }
+
+// 赋权成功后操作
+bus.on('getUserList', async (num: number) => {
+  if (num === 1) {
+    const res = await returnListData(paginationData.currentPage, identity.value)
+    tableData.value = res.data
+    if (tableData.value.length === 0) {
+      paginationData.currentPage -= paginationData.currentPage - 1
+      getAdminListlength()
+    }
+  }
+})
 
 // 用户总数
 const userTotal = ref<number>()
@@ -187,7 +221,7 @@ const paginationData = reactive({
 const getAdminListlength = async () => {
   const res = await getAdminListLength(identity.value)
   userTotal.value = res.data.length
-  paginationData.pageCount = Math.ceil(userTotal.value / 1)
+  paginationData.pageCount = Math.ceil(userTotal.value / 10)
 }
 getAdminListlength()
 // 获取第一页内容

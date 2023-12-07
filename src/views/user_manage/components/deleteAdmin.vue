@@ -11,12 +11,12 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 const centerDialogVisible = ref(false)
 
 import { bus } from '@/utils/mitt.js'
 
-import { changeIdentityToUser } from '@/api/userinfo.js'
+import { changeIdentityToUser, deleteUser } from '@/api/userinfo.js'
 // 消息提示
 import { ElMessage } from 'element-plus'
 
@@ -26,25 +26,49 @@ onBeforeUnmount(() => {
 })
 
 const adminId = ref()
+const userId = ref()
+const userAccount = ref()
 
 bus.on('deleteID', (id: number) => {
   //   console.log(id)
   adminId.value = id
 })
 
+bus.on('deleteUserID', (userInfor: any) => {
+  // console.log(userInfor)
+  userId.value = userInfor.id
+  userAccount.value = userInfor.account
+})
+
 const emit = defineEmits(['success'])
 const deleteADminUser = async () => {
-  const res = await changeIdentityToUser(adminId.value)
-  //   console.log(res)
-  if (res.data.status === 0) {
-    ElMessage({
-      message: res.data.message,
-      type: 'success'
-    })
-    centerDialogVisible.value = false
-    emit('success')
-  } else {
-    ElMessage.error(res.data.message)
+  if (adminId.value) {
+    const res = await changeIdentityToUser(adminId.value)
+    //   console.log(res)
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+      centerDialogVisible.value = false
+      emit('success')
+    } else {
+      ElMessage.error(res.data.message)
+    }
+  }
+  if (userId.value) {
+    const res = await deleteUser(userId.value, userAccount.value)
+    //   console.log(res)
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+      centerDialogVisible.value = false
+      bus.emit('offDialog', 1)
+    } else {
+      ElMessage.error(res.data.message)
+    }
   }
 }
 const open = () => {

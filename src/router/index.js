@@ -31,24 +31,29 @@ const routes = [
         component: () => import('@/views/overview/index.vue')
       },
       {
-        name: 'product_manage',
-        path: '/product_manage',
+        name: 'user_product_manage',
+        path: '/user_product_manage',
         component: () => import('@/views/user_manage/product_manage/index.vue')
       },
       {
-        name: 'message_manage',
-        path: '/message_manage',
+        name: 'user_message_manage',
+        path: '/user_message_manage',
         component: () => import('@/views/user_manage/message_manage/index.vue')
       },
       {
-        name: 'users_manage',
-        path: '/users_manage',
+        name: 'user_users_manage',
+        path: '/user_users_manage',
         component: () => import('@/views/user_manage/users_manage/index.vue')
       },
       {
-        name: 'user_list',
-        path: '/user_list',
+        name: 'user_user_list',
+        path: '/user_user_list',
         component: () => import('@/views/user_manage/user_list/index.vue')
+      },
+      {
+        name: 'product_product_manage',
+        path: '/product_product_manage',
+        component: () => import('@/views/product/product_manage_list/index.vue')
       }
     ]
   }

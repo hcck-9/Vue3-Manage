@@ -56,7 +56,7 @@
       />
     </div>
   </div>
-  <create ref="Create" @success="getAdminlist"></create>
+  <create ref="Create" @success="getAdminlist(1)"></create>
   <edit ref="Edit" @success="getAdminlist"></edit>
   <delete-admin ref="Delete" @success="getAdminlist"></delete-admin>
 </template>
@@ -129,10 +129,13 @@ const paginationData = reactive({
 })
 
 // 获取用户总数
-const getAdminListlength = async () => {
+const getAdminListlength = async (num?: number) => {
   const res = await getAdminListLength(identity.value)
   userTotal.value = res.data.length
   paginationData.pageCount = Math.ceil(userTotal.value / 10)
+  if (num === 1) {
+    paginationData.currentPage = paginationData.pageCount
+  }
 }
 getAdminListlength()
 // 获取第一页内容
@@ -149,8 +152,8 @@ const paginationChange = async (value: number) => {
 }
 
 // 获取管理员列表
-const getAdminlist = () => {
-  getAdminListlength()
+const getAdminlist = async (num?: number) => {
+  await getAdminListlength(num)
   paginationChange(paginationData.currentPage)
 }
 getAdminlist()
@@ -160,5 +163,8 @@ getAdminlist()
 :deep(.el-table .el-button) {
   margin-right: 12px;
   margin-left: 0;
+}
+:deep(.el-table .el-table__cell) {
+  padding: 7px 0;
 }
 </style>

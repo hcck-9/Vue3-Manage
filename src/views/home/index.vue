@@ -109,6 +109,7 @@ const tableData = []
   background: #f5f5f5;
   display: flex;
   flex-direction: column;
+  // overflow: hidden;
 
   // 轮播图外壳
   .swiper-wrapped {
