@@ -35,7 +35,7 @@
               <el-menu-item index="product_product_manage">产品列表</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="出库管理">
-              <el-menu-item index="4-2">出库列表</el-menu-item>
+              <el-menu-item index="out_product_list">出库列表</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
           <el-sub-menu index="5">

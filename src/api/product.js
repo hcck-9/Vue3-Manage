@@ -152,7 +152,7 @@ export const auditProduct = (data) => {
 // 通过入库编号对产品进行搜索
 export const searchProductForId = (product_id) => {
   return instance({
-    url: '/pro/auditProduct',
+    url: '/pro/searchProductForId',
     method: 'POST',
     data: {
       product_id

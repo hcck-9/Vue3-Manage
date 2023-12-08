@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onBeforeUnmount, reactive, ref } from 'vue'
 import breadCrumb from '@/components/bread-crumb.vue'
 
 import { Search } from '@element-plus/icons-vue'
@@ -73,6 +73,15 @@ import deleteAdmin from '../components/deleteAdmin.vue'
 
 import { bus } from '@/utils/mitt.js'
 import { searchUser, getAdminListLength, returnListData } from '@/api/userinfo.js'
+
+// 消息提示
+import { ElMessage } from 'element-plus'
+
+// 取消订阅/监听
+onBeforeUnmount(() => {
+  bus.all.clear()
+})
+
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
