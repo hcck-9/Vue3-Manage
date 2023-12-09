@@ -106,8 +106,7 @@ export const applyProductList = () => {
 }
 
 // 对产品进行撤回申请
-export const withdrawApplyProduct = (data) => {
-  const { id } = data
+export const withdrawApplyProduct = (id) => {
   return instance({
     url: '/pro/withdrawApplyProduct',
     method: 'POST',
@@ -129,7 +128,8 @@ export const auditProduct = (data) => {
     product_out_apply_person,
     product_in_warehouse_number,
     product_single_price,
-    product_out_number
+    product_out_number,
+    product_apply_time
   } = data
   return instance({
     url: '/pro/auditProduct',
@@ -144,7 +144,8 @@ export const auditProduct = (data) => {
       product_out_apply_person,
       product_in_warehouse_number,
       product_single_price,
-      product_out_number
+      product_out_number,
+      product_apply_time
     }
   })
 }

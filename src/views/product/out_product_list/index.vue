@@ -12,7 +12,7 @@
             :prefix-icon="Search"
             @change="searchProductOutId()"
             clearable
-            @clear="getFirstPageList"
+            @clear="getFirstPageData"
           />
         </div>
       </div>
@@ -57,6 +57,13 @@ import { reactive, ref } from 'vue'
 import breadCrumb from '@/components/bread-crumb.vue'
 import { Search } from '@element-plus/icons-vue'
 
+import {
+  searchProductForOutId,
+  auditProductList,
+  getOutProductLength,
+  returnOutProductListData
+} from '@/api/product.js'
+
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
@@ -69,6 +76,19 @@ const productOutId = ref()
 // 出库表格
 const tableData = ref([])
 
+// 通过出库编号对产品进行搜索
+const searchProductOutId = async () => {
+  const res = await searchProductForOutId(productOutId.value)
+  tableData.value = res.data
+}
+
+// 获取出库产品列表
+const getAuditProductlist = async () => {
+  const res = await auditProductList()
+  tableData.value = res.data
+}
+getAuditProductlist()
+
 // 分页数据
 const paginationData = reactive({
   // 总页数
@@ -78,6 +98,37 @@ const paginationData = reactive({
 })
 
 const outProductTotal = ref<number>(0)
+
+// 获取出库产品总数
+const getOutProductListlength = async (num?: number) => {
+  const res = await getOutProductLength()
+  outProductTotal.value = res.data.length
+  paginationData.pageCount = Math.ceil(outProductTotal.value / 2)
+  if (num === 1) {
+    paginationData.currentPage = paginationData.pageCount
+  }
+}
+getOutProductListlength()
+
+// 获取第一页内容
+const getFirstPageData = async () => {
+  const res = await returnOutProductListData(1)
+  tableData.value = res.data
+}
+getFirstPageData()
+
+const currentChange = async (value: number) => {
+  const res = await returnOutProductListData(value)
+  tableData.value = res.data
+  paginationData.currentPage = value
+}
+
+// 获取出库产品列表
+const getOutProductlist = async (num?: number) => {
+  await getOutProductListlength(num)
+  currentChange(paginationData.currentPage)
+}
+getOutProductlist()
 </script>
 
 <style scoped lang="scss">
