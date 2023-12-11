@@ -59,6 +59,16 @@ const routes = [
         name: 'out_product_list',
         path: '/out_product_list',
         component: () => import('@/views/product/out_product_list/index.vue')
+      },
+      {
+        name: 'message_list',
+        path: '/message_list',
+        component: () => import('@/views/message/message_list/index.vue')
+      },
+      {
+        name: 'recycle',
+        path: '/recycle',
+        component: () => import('@/views/message/recycle/index.vue')
       }
     ]
   }

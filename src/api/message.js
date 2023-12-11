@@ -78,7 +78,7 @@ export const searchMessageBydepartment = (message_publish_department) => {
 }
 
 // 根据发布等级进行获取消息
-export const searchMessageByLevel = (message_publish_department) => {
+export const searchMessageByLevel = (message_level) => {
   return instance({
     url: '/msg/searchMessageByLevel',
     method: 'POST',
@@ -115,7 +115,7 @@ export const updateClick = (data) => {
 // 初次删除
 export const firstDelete = (id) => {
   return instance({
-    url: '/msg/getMessage',
+    url: '/msg/firstDelete',
     method: 'POST',
     data: {
       id
