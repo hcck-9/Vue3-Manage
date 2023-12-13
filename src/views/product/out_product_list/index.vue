@@ -103,7 +103,7 @@ const outProductTotal = ref<number>(0)
 const getOutProductListlength = async (num?: number) => {
   const res = await getOutProductLength()
   outProductTotal.value = res.data.length
-  paginationData.pageCount = Math.ceil(outProductTotal.value / 2)
+  paginationData.pageCount = Math.ceil(outProductTotal.value / 9)
   if (num === 1) {
     paginationData.currentPage = paginationData.pageCount
   }
@@ -165,7 +165,6 @@ getOutProductlist()
   .table-footer {
     display: flex;
     justify-content: flex-end;
-    background: #fff;
   }
 }
 

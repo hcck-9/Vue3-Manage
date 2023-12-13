@@ -8,7 +8,7 @@
         <!-- 头像区域 -->
         <div class="person-avatar-wrapped">
           <el-avatar :size="100" :src="userInfoData.imageUrl" />
-          <span class="department">123</span>
+          <span class="department">{{ userInfoData.department }}</span>
           <span class="company">123123123</span>
         </div>
         <!-- 分割线 -->
@@ -35,7 +35,7 @@
         <div class="title">常用管理</div>
         <el-row :gutter="20">
           <el-col :span="6">
-            <div class="button-area">
+            <div class="button-area" @click="routerTo('user_user_list')">
               <SvgIcon
                 icon-name="user"
                 style="width: 24px; height: 24px"
@@ -45,7 +45,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <div class="button-area">
+            <div class="button-area" @click="routerTo('product_product_manage')">
               <SvgIcon
                 icon-name="product"
                 style="width: 24px; height: 24px"
@@ -55,7 +55,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <div class="button-area">
+            <div class="button-area" @click="routerTo('message_list')">
               <SvgIcon
                 icon-name="notice"
                 style="width: 24px; height: 24px"
@@ -65,7 +65,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <div class="button-area">
+            <div class="button-area" @click="routerTo('set')">
               <SvgIcon
                 icon-name="me"
                 style="width: 24px; height: 24px"
@@ -75,7 +75,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <div class="button-area">
+            <div class="button-area" @click="routerTo('set')">
               <SvgIcon
                 icon-name="message"
                 style="width: 24px; height: 24px"
@@ -85,7 +85,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <div class="button-area">
+            <div class="button-area" @click="routerTo('set')">
               <SvgIcon
                 icon-name="set"
                 style="width: 24px; height: 24px"
@@ -111,15 +111,28 @@
 import { ref, reactive, onMounted } from 'vue'
 import breadCrumb from '../../components/bread-crumb.vue'
 // 引入store
-import { useUserInfoStore } from '../../store/userinfo'
+import { useUserInfoStore } from '@/store/userinfo.js'
 const userInfoStore = useUserInfoStore()
 // 引入 echarts
 import * as echarts from 'echarts'
 // 导入 SvgIcon
-import SvgIcon from '../../components/SvgIcon.vue'
+import SvgIcon from '@/components/SvgIcon.vue'
 // 导入用户信息接口
-import { getUserInfor } from '../../api/userinfo'
+import { getUserInfor } from '@/api/userinfo.js'
 
+import {
+  getCategoryAndNumber,
+  getAdminAndNumber,
+  getLevelAndNumber,
+  getDayAndNumber
+} from '@/api/ov.js'
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const routerTo = (x: string) => {
+  router.push(`\/${x}`)
+}
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
@@ -159,9 +172,13 @@ onMounted(() => {
   massageAllDay()
 })
 // 管理员与用户比值图
-const manageUser = () => {
+const manageUser = async () => {
   // 通过类名 初始化
   const mu = echarts.init(document.querySelector('.manage-user'))
+  mu.showLoading()
+  const res = await getAdminAndNumber()
+  const data = res.data.data
+  mu.hideLoading()
   document.querySelector('.manage-user').setAttribute('_echarts_instance_', '')
   // 设置基本的参数
   mu.setOption({
@@ -181,14 +198,8 @@ const manageUser = () => {
       {
         // name: 'Access From',
         type: 'pie',
-        radius: '65%',
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
-        ],
+        radius: '50%',
+        data: data,
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -208,6 +219,10 @@ const manageUser = () => {
 // 产品类别图
 const productCategoryBar = async () => {
   const pcb = echarts.init(document.querySelector('.product-category-bar'))
+  pcb.showLoading()
+  const res = await getCategoryAndNumber()
+  const data = res.data
+  pcb.hideLoading()
   document.querySelector('.product-category-bar').setAttribute('_echarts_instance_', '')
   pcb.setOption({
     title: {
@@ -223,7 +238,10 @@ const productCategoryBar = async () => {
     xAxis: {
       type: 'category',
       // 食品类，服装类，鞋帽类，日用品类，家具类，家用电器类，纺织品类，五金类
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: data.category,
+      axisLabel: {
+        interval: 0 //代表显示所有x轴标签显示
+      }
     },
     yAxis: {
       type: 'value'
@@ -233,7 +251,7 @@ const productCategoryBar = async () => {
         type: 'bar',
         barWidth: 40,
         colorBy: 'data',
-        data: [10, 52, 200, 334, 390, 330, 220]
+        data: data.price
       }
     ]
   })
@@ -243,13 +261,17 @@ const productCategoryBar = async () => {
 }
 
 // 公告等级分布图
-const massageLevel = () => {
+const massageLevel = async () => {
   const ml = echarts.init(document.querySelector('.massage-level'))
+  ml.showLoading()
+  const res = await getLevelAndNumber()
+  const data = res.data.data
+  ml.hideLoading()
   document.querySelector('.massage-level').setAttribute('_echarts_instance_', '')
   ml.setOption({
     title: {
       text: '公告等级分布图',
-      top: '3%',
+      top: '1%',
       textStyle: {
         fontSize: 16
       }
@@ -258,7 +280,7 @@ const massageLevel = () => {
       trigger: 'item'
     },
     legend: {
-      top: '5%',
+      top: '10%',
       left: 'center'
     },
     series: [
@@ -285,13 +307,7 @@ const massageLevel = () => {
         labelLine: {
           show: false
         },
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
-        ]
+        data: data
       }
     ]
   })
@@ -300,7 +316,7 @@ const massageLevel = () => {
   })
 }
 // 消息每日总量图
-const massageAllDay = () => {
+const massageAllDay = async () => {
   // // 底部日期的实现
   // let dd = new Date()
   // let week = []
@@ -319,13 +335,18 @@ const massageAllDay = () => {
   //   number.push(res.number)
   // })
   const mad = echarts.init(document.querySelector('.userlogin-week'))
+  mad.showLoading()
+  const res = await getDayAndNumber()
+  const data = res.data
+  // console.log(data)
+  mad.hideLoading()
   document.querySelector('.userlogin-week').setAttribute('_echarts_instance_', '')
   mad.setOption({
     title: {
       text: '每日登录人数图',
       top: '3%',
       textStyle: {
-        fontSize: 16
+        fontSize: 14
       }
     },
     tooltip: {
@@ -333,14 +354,14 @@ const massageAllDay = () => {
     },
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: data.week.reverse()
     },
     yAxis: {
       type: 'value'
     },
     series: [
       {
-        data: [150, 230, 224, 218, 135, 147, 260],
+        data: data.number,
         type: 'line'
       }
     ]

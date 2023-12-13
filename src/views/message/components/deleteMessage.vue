@@ -1,9 +1,11 @@
 <template>
-  <el-dialog v-model="centerDialogVisible" title="删除操作" width="400px" center>
-    <span>是确定要删除这个公告吗？</span>
+  <el-dialog v-model="centerDialogVisible" :title="title" width="400px" center>
+    <span v-if="title.value == '删除信息'" v-html="tips"></span>
+    <span v-else-if="title.value == '恢复消息'" v-html="tips"></span>
+    <span v-else v-html="tips"></span>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="deleteMessage"> 确定 </el-button>
+        <el-button type="primary" @click="operationMessage"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>
@@ -15,7 +17,7 @@ const centerDialogVisible = ref(false)
 
 import { bus } from '@/utils/mitt.js'
 
-import { firstDelete } from '@/api/message.js'
+import { firstDelete, recover, deleteMessage } from '@/api/message.js'
 // 消息提示
 import { ElMessage } from 'element-plus'
 
@@ -25,25 +27,71 @@ onBeforeUnmount(() => {
 })
 
 const messageId = ref()
+const department = ref()
+const title = ref()
+const tips = ref()
 
-bus.on('deleteMessage', (id: number) => {
-  // console.log(id)
-  messageId.value = id
+bus.on('deleteMessageId', (row: any) => {
+  title.value = '删除信息'
+  tips.value = '您确定要删除这个公告吗？'
+  messageId.value = row.id
+  department.value = row.message_receipt_object
+})
+bus.on('renewID', (row: any) => {
+  title.value = '恢复消息'
+  tips.value = '您确定要恢复这个公告吗？'
+  messageId.value = row.id
+  department.value = row.message_receipt_object
+})
+bus.on('realDelete', (row: any) => {
+  title.value = '真正删除信息'
+  tips.value = '请慎重操作！您确定要真正删除这个公告吗？'
+  messageId.value = row.id
 })
 
 const emit = defineEmits(['success'])
-const deleteMessage = async () => {
-  const res = await firstDelete(messageId.value)
-  // console.log(res)
-  if (res.data.status === 0) {
-    ElMessage({
-      message: res.data.message,
-      type: 'success'
-    })
-    centerDialogVisible.value = false
-    emit('success')
-  } else {
-    ElMessage.error(res.data.message)
+const operationMessage = async () => {
+  if (title.value === '删除信息') {
+    const res = await firstDelete(messageId.value)
+    // console.log(res)
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+      centerDialogVisible.value = false
+      emit('success')
+    } else {
+      ElMessage.error(res.data.message)
+    }
+  }
+  if (title.value === '恢复消息') {
+    const res = await recover(messageId.value)
+    // console.log(res)
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+      centerDialogVisible.value = false
+      emit('success')
+    } else {
+      ElMessage.error(res.data.message)
+    }
+  }
+  if (title.value === '真正删除信息') {
+    const res = await deleteMessage(messageId.value)
+    // console.log(res)
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+      centerDialogVisible.value = false
+      emit('success')
+    } else {
+      ElMessage.error(res.data.message)
+    }
   }
 }
 const open = () => {

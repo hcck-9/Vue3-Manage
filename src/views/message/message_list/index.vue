@@ -27,7 +27,7 @@
                   </el-radio-group>
                 </div>
                 <div class="button-wrapped">
-                  <el-button type="primary" plain @click="getCompanyMessagelist"
+                  <el-button type="primary" plain @click="getCompanyMessageFirstPageList"
                     >全部公告</el-button
                   >
                   <el-button type="primary" @click="openCreate(1)">发布公告</el-button>
@@ -71,7 +71,7 @@
                     <template #default="{ row }">
                       <div>
                         <el-button type="success" @click="openEdit(row)">编辑</el-button>
-                        <el-button type="danger" @click="openDelete(row.id)">删除</el-button>
+                        <el-button type="danger" @click="openDelete(row)">删除</el-button>
                       </div>
                     </template>
                   </el-table-column>
@@ -81,11 +81,11 @@
             <div class="table-footer">
               <el-pagination
                 :page-size="1"
-                :current-page="paginationData.productCurrentPage"
+                :current-page="paginationData.companyCurrentPage"
                 :pager-count="7"
-                :total="paginationData.productTotal"
-                :page-count="paginationData.productPageCount"
-                @current-change="ProductCurrentChange"
+                :total="paginationData.companyTotal"
+                :page-count="paginationData.companyPageCount"
+                @current-change="companyCurrentChange"
                 layout="prev, pager, next"
               />
             </div>
@@ -112,7 +112,7 @@
                     <template #default="{ row }">
                       <div>
                         <el-button type="success" @click="openEdit(row)">编辑</el-button>
-                        <el-button type="danger" @click="openDelete(row.id)">删除</el-button>
+                        <el-button type="danger" @click="openDelete(row)">删除</el-button>
                       </div>
                     </template>
                   </el-table-column>
@@ -122,11 +122,11 @@
             <div class="table-footer">
               <el-pagination
                 :page-size="1"
-                :current-page="paginationData.applyProductCurrentPage"
+                :current-page="paginationData.systemCurrentPage"
                 :pager-count="7"
-                :total="paginationData.applyProductTotal"
-                :page-count="paginationData.applyProductCount"
-                @current-change="applyProductCurrentChange"
+                :total="paginationData.systemTotal"
+                :page-count="paginationData.systemCount"
+                @current-change="systemCurrentChange"
                 layout="prev, pager, next"
               />
             </div></div
@@ -141,7 +141,6 @@
 <script setup lang="ts">
 import { ref, reactive, onBeforeUnmount } from 'vue'
 import breadCrumb from '@/components/bread-crumb.vue'
-import { Search } from '@element-plus/icons-vue'
 import createmessage from '../components/createMessage.vue'
 import deletemessage from '../components/deleteMessage.vue'
 import { bus } from '@/utils/mitt.js'
@@ -151,7 +150,11 @@ import {
   companyMessageList,
   systemMessageList,
   searchMessageBydepartment,
-  searchMessageByLevel
+  searchMessageByLevel,
+  getCompanyMessageLength,
+  getSystemMessageLength,
+  returnCompanyListData,
+  returnSystemListData
 } from '@/api/message.js'
 import { getDepartment } from '@/api/setting.js'
 import type { TabsPaneContext } from 'element-plus'
@@ -209,32 +212,26 @@ const openEdit = (row: any) => {
 
 // 删除公告
 const deleteMessageRef = ref()
-const openDelete = (id: number) => {
+const openDelete = (row: any) => {
   // 第一个参数是标记，第二个是参数
-  bus.emit('deleteMessage', id)
+  bus.emit('deleteMessageId', row)
   deleteMessageRef.value.open()
 }
 
 const companyTableData = ref([])
 const systemMessageData = ref([])
 
-// 获取公司公告列表
-const getCompanyMessagelist = async () => {
-  const res = await companyMessageList()
-  companyTableData.value = res.data
-}
+// // 获取公司公告列表
+// const getCompanyMessagelist = async () => {
+//   const res = await companyMessageList()
+//   companyTableData.value = res.data
+// }
 
-// 获取系统消息列表
-const getSystemMessagelist = async () => {
-  const res = await systemMessageList()
-  systemMessageData.value = res.data
-}
-
-const getTwoPageList = () => {
-  getCompanyMessagelist()
-  getSystemMessagelist()
-}
-getTwoPageList()
+// // 获取系统消息列表
+// const getSystemMessagelist = async () => {
+//   const res = await systemMessageList()
+//   systemMessageData.value = res.data
+// }
 
 // 根据发布部门进行获取消息
 const getListByDepartment = async () => {
@@ -246,68 +243,88 @@ const level = ref()
 // 根据发布等级进行获取消息
 const getMessageListByLevel = async () => {
   const res = await searchMessageByLevel(level.value)
-  console.log(res.data)
-
   companyTableData.value = res.data
 }
 
 // 分页数据
 const paginationData = reactive({
-  // 产品总数
-  productTotal: 0,
-  // 产品列表总页数
-  productPageCount: 0,
-  // 产品列表当前所处页数
-  productCurrentPage: 1,
-  // 申请的总数
-  applyProductTotal: 0,
-  // 申请列表总页数
-  applyProductCount: 0,
-  // 申请列表当前所处页数
-  applyProductCurrentPage: 1
+  // 公司公告总数
+  companyTotal: 1,
+  // 公司公告列表总页数
+  companyPageCount: 1,
+  // 公司公告列表当前所处页数
+  companyCurrentPage: 1,
+  // 系统消息总数
+  systemTotal: 1,
+  // 系统消息总页数
+  systemCount: 1,
+  // 系统消息当前所处页数
+  systemCurrentPage: 1
 })
 
-// // 获取产品列表总数
-// const getProductListlength = async (num?: number) => {
-//   const res = await getProductLength()
-//   paginationData.productTotal = res.data.length
-//   paginationData.productPageCount = Math.ceil(paginationData.productTotal / 10)
-//   if (num === 1) {
-//     paginationData.productCurrentPage = paginationData.productCurrentPage
-//   }
-// }
-// getProductListlength()
+// 获取公司公告总数
+const getCompanyMessagelength = async (num?: number) => {
+  const res = await getCompanyMessageLength()
+  paginationData.companyTotal = res.data.length
+  paginationData.companyPageCount = Math.ceil(paginationData.companyTotal / 10)
+  if (num === 1) {
+    paginationData.companyCurrentPage = paginationData.companyCurrentPage
+  }
+}
+getCompanyMessagelength()
 
-// // 获取产品列表第一页内容
-// // getProductFirstPageList
-// const getProductFirstPageList = async () => {
-//   const res = await returnProductListData(1)
-//   companyTableData.value = res.data
-// }
-// getProductFirstPageList()
+// 获取公司公告第一页内容
+const getCompanyMessageFirstPageList = async () => {
+  const res = await returnCompanyListData(1)
+  companyTableData.value = res.data
+}
+getCompanyMessageFirstPageList()
 
-// const ProductCurrentChange = async (value: number) => {
-//   const res = await returnProductListData(value)
-//   companyTableData.value = res.data
-//   paginationData.productCurrentPage = value
-// }
+const companyCurrentChange = async (value: number) => {
+  const res = await returnCompanyListData(value)
+  companyTableData.value = res.data
+  paginationData.companyCurrentPage = value
+}
 
-// // 获取出库产品列表
-// const getOutProductlist = async (num?: number) => {
-//   await getProductListlength(num)
-//   ProductCurrentChange(paginationData.productCurrentPage)
-// }
-// getOutProductlist()
+// 获取系统消息总数
+const getSystemMessagelength = async (num?: number) => {
+  const res = await getSystemMessageLength()
+  paginationData.systemTotal = res.data.length
+  paginationData.systemCount = Math.ceil(paginationData.systemTotal / 10)
+  if (num === 1) {
+    paginationData.systemCurrentPage = paginationData.systemCurrentPage
+  }
+}
+getSystemMessagelength()
 
-// // 更新产品列表和申请出库列表第一页数据
-// const changeTwoFirstPageData = () => {
-//   getProductFirstPageList()
-//   getApplyProductFirstPageList()
-// }
+// 获取系统消息第一页内容
+const getSystemMessageFirstPageList = async () => {
+  const res = await returnSystemListData(1)
+  systemMessageData.value = res.data
+}
+getSystemMessageFirstPageList()
+
+const systemCurrentChange = async (value: number) => {
+  const res = await returnSystemListData(value)
+  systemMessageData.value = res.data
+  paginationData.companyCurrentPage = value
+}
+
+const getTwoPageList = () => {
+  getCompanyMessageFirstPageList()
+  getSystemMessageFirstPageList()
+}
+getTwoPageList()
 </script>
 
 <style scoped lang="scss">
 :deep(.el-select) {
   margin-right: 35px;
+}
+:deep(.el-tabs__header) {
+  margin-bottom: 10px;
+}
+:deep(.module-common-table) {
+  margin-bottom: 4px;
 }
 </style>

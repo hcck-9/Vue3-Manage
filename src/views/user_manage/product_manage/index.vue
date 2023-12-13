@@ -141,7 +141,7 @@ const paginationData = reactive({
 const getAdminListlength = async (num?: number) => {
   const res = await getAdminListLength(identity.value)
   userTotal.value = res.data.length
-  paginationData.pageCount = Math.ceil(userTotal.value / 10)
+  paginationData.pageCount = Math.ceil(userTotal.value / 9)
   if (num === 1) {
     paginationData.currentPage = paginationData.pageCount
   }

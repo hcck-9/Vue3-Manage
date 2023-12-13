@@ -16,8 +16,7 @@
         </el-form-item>
         <el-form-item label="产品类别" prop="product_category">
           <el-select v-model="createProductForm.product_category" placeholder="请选择产品类别">
-            <el-option label="食品类" value="食品类" />
-            <el-option label="服装类" value="服装类" />
+            <el-option v-for="item in productData" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="产品单位" prop="product_unit">
@@ -53,6 +52,7 @@
 import { onBeforeUnmount, reactive, ref } from 'vue'
 const dialogFormVisible = ref(false)
 
+import { getProduct } from '@/api/setting.js'
 import type { FormInstance, FormRules } from 'element-plus'
 import { bus } from '@/utils/mitt.js'
 // 右对齐
@@ -66,6 +66,15 @@ import { createProduct } from '@/api/product.js'
 onBeforeUnmount(() => {
   bus.all.clear()
 })
+
+// 产品数据
+const productData = ref([])
+const returnProduct = async () => {
+  const res = await getProduct()
+  // console.log(res)
+  productData.value = res.data
+}
+returnProduct()
 
 interface productData {
   product_id: number | null

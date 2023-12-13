@@ -31,6 +31,7 @@ import { auditProduct } from '@/api/product.js'
 import { ElMessage } from 'element-plus'
 // 引入store
 import { useUserInfoStore } from '@/store/userinfo.js'
+import { tracking } from '@/utils/operation.js'
 const userInfoStore = useUserInfoStore()
 
 // 取消订阅/监听
@@ -40,6 +41,7 @@ onBeforeUnmount(() => {
 
 interface productData {
   id: number | null
+  product_name: string
   product_out_id: number | null
   product_out_status: string
   audit_memo: string
@@ -54,6 +56,7 @@ interface productData {
 
 const formData = reactive<productData>({
   id: null,
+  product_name: null,
   product_out_id: null,
   product_out_status: '',
   audit_memo: '',
@@ -68,9 +71,9 @@ const formData = reactive<productData>({
 
 bus.on('auditProductID', (row: any) => {
   row = toRaw(row)
-  console.log(row)
-
+  // console.log(row)
   formData.id = row.id
+  formData.product_name = row.product_name
   formData.product_out_id = row.product_out_id
   formData.product_out_price = row.product_out_price
   formData.product_out_audit_person = userInfoStore.name
@@ -93,6 +96,13 @@ const auditProductOption = async () => {
     })
     centerDialogVisible.value = false
     emit('success')
+    tracking(
+      '产品',
+      localStorage.getItem('name'),
+      formData.product_name,
+      '高级',
+      formData.product_out_status
+    )
   } else {
     ElMessage.error('审核产品失败！')
   }

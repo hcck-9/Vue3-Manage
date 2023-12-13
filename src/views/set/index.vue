@@ -155,11 +155,33 @@
                 @blur="handleInputConfirm"
               />
               <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
-                + New Tag
+                + 添加部门
               </el-button>
             </div>
             <div class="product-set">
               <span>产品设置</span>
+              <el-tag
+                v-for="tag in dynamicPTags"
+                :key="tag"
+                class="mx-1"
+                closable
+                :disable-transitions="false"
+                @close="handlePClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <el-input
+                v-if="inputPVisible"
+                ref="InputPRef"
+                v-model="inputPValue"
+                class="ml-1 w-20"
+                size="small"
+                @keyup.enter="handlePInputConfirm"
+                @blur="handlePInputConfirm"
+              />
+              <el-button v-else class="button-new-tag ml-1" size="small" @click="showPInput">
+                + 添加产品类别
+              </el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -200,7 +222,9 @@ import {
   getCompanyName,
   changeCompanyName,
   setDepartment,
-  getDepartment
+  getDepartment,
+  setProduct,
+  getProduct
 } from '@/api/setting.js'
 
 import { bus } from '@/utils/mitt.js'
@@ -338,6 +362,7 @@ const handleSwiperSuccess: UploadProps['onSuccess'] = (response) => {
 }
 
 // 其他设置
+// 部门设置
 const inputValue = ref('')
 const dynamicTags = ref([])
 const inputVisible = ref(false)
@@ -383,6 +408,53 @@ const getDepartmentData = async () => {
   dynamicTags.value = res.data
 }
 getDepartmentData()
+
+// 产品设置
+const inputPValue = ref('')
+const dynamicPTags = ref([])
+const inputPVisible = ref(false)
+const InputPRef = ref<InstanceType<typeof ElInput>>()
+
+// 删除部门执行的函数
+const handlePClose = async (tag: string) => {
+  dynamicPTags.value.splice(dynamicPTags.value.indexOf(tag), 1)
+  const res = await setProduct(JSON.stringify(toRaw(dynamicPTags.value)))
+  if (res.data.status === 0) {
+    ElMessage({
+      message: res.data.message,
+      type: 'success'
+    })
+  }
+}
+// 点击按钮出现输入框
+const showPInput = () => {
+  inputPVisible.value = true
+  nextTick(() => {
+    InputPRef.value!.input!.focus()
+  })
+}
+// 输入完成后执行函数
+const handlePInputConfirm = async () => {
+  if (inputPValue.value) {
+    dynamicPTags.value.push(inputPValue.value)
+    const res = await setProduct(JSON.stringify(toRaw(dynamicPTags.value)))
+    if (res.data.status === 0) {
+      ElMessage({
+        message: res.data.message,
+        type: 'success'
+      })
+    }
+  }
+  inputPVisible.value = false
+  inputPValue.value = ''
+}
+
+// 获取产品信息
+const getProductData = async () => {
+  const res = await getProduct()
+  dynamicPTags.value = res.data
+}
+getProductData()
 </script>
 
 <style scoped lang="scss">

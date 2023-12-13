@@ -221,7 +221,7 @@ const paginationData = reactive({
 const getAdminListlength = async () => {
   const res = await getAdminListLength(identity.value)
   userTotal.value = res.data.length
-  paginationData.pageCount = Math.ceil(userTotal.value / 10)
+  paginationData.pageCount = Math.ceil(userTotal.value / 9)
 }
 getAdminListlength()
 // 获取第一页内容

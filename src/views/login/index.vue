@@ -91,7 +91,8 @@
 import { ref, reactive } from 'vue'
 import forgetPassword from './components/forget_password.vue'
 // 导入登录注册接口
-import { login, register } from '../../api/login'
+import { login, register } from '@/api/login.js'
+import { loginLog } from '@/api/log.js'
 // 消息提示
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
@@ -147,9 +148,11 @@ const Login = async () => {
       type: 'success'
     })
     const { token } = res.data
-    const { id } = res.data.results
+    const { id, name, account, email } = res.data.results
     localStorage.setItem('id', id)
     localStorage.setItem('token', token)
+    localStorage.setItem('name', name)
+    await loginLog(account, name, email)
     store.userInfor(id)
     // 跳转
     router.push('/home')

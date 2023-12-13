@@ -25,7 +25,7 @@
               <div class="module-common-table">
                 <el-table :data="tableData" style="width: 100%">
                   <el-table-column type="index" width="50"></el-table-column>
-                  <el-table-column prop="product_id" label="入库编号" />
+                  <el-table-column prop="product_id" label="入库编号" width="100" />
                   <el-table-column prop="product_name" label="产品名称" width="160" />
                   <el-table-column prop="product_category" label="产品类别" width="100" />
                   <el-table-column prop="product_unit" label="单位" />
@@ -123,7 +123,6 @@
                   <el-input
                     v-model="productOutId"
                     class="w-50 m-2"
-                    size="large"
                     clearable
                     placeholder="输入申请出库编号进行搜索"
                     :prefix-icon="Search"
@@ -195,7 +194,7 @@
   <!-- 申请 -->
   <apply ref="applyRef" @success="changeTwoFirstPageData"></apply>
   <!-- 编辑 -->
-  <editproduct ref="editProductRef" @success="getProductFirstPageList"></editproduct>
+  <editproduct ref="editProductRef" @success="changeTwoFirstPageData"></editproduct>
   <!-- 删除 -->
   <deleteproduct ref="deleteProductRef" @success="getProductFirstPageList"></deleteproduct>
   <!-- 审核 -->
@@ -371,7 +370,7 @@ const paginationData = reactive({
 const getProductListlength = async (num?: number) => {
   const res = await getProductLength()
   paginationData.productTotal = res.data.length
-  paginationData.productPageCount = Math.ceil(paginationData.productTotal / 10)
+  paginationData.productPageCount = Math.ceil(paginationData.productTotal / 9)
   if (num === 1) {
     paginationData.productCurrentPage = paginationData.productCurrentPage
   }
@@ -381,6 +380,7 @@ getProductListlength()
 // 获取产品列表第一页内容
 // getProductFirstPageList
 const getProductFirstPageList = async () => {
+  paginationData.productCurrentPage = 1
   const res = await returnProductListData(1)
   tableData.value = res.data
 }
@@ -403,7 +403,7 @@ getOutProductlist()
 const getApplyProductListlength = async (num?: number) => {
   const res = await getApplyProductLength()
   paginationData.applyProductTotal = res.data.length
-  paginationData.applyProductCount = Math.ceil(paginationData.applyProductTotal / 10)
+  paginationData.applyProductCount = Math.ceil(paginationData.applyProductTotal / 9)
   if (num === 1) {
     paginationData.applyProductCurrentPage = paginationData.applyProductCurrentPage
   }
@@ -413,15 +413,16 @@ getApplyProductListlength()
 // 获取申请出库产品列表第一页内容
 // getProductFirstPageList
 const getApplyProductFirstPageList = async () => {
+  paginationData.applyProductCurrentPage = 1
   const res = await returnApplyProductListData(1)
   applyTableData.value = res.data
 }
 getApplyProductFirstPageList()
 
 const applyProductCurrentChange = async (value: number) => {
+  paginationData.applyProductCurrentPage = value
   const res = await returnApplyProductListData(value)
   applyTableData.value = res.data
-  paginationData.applyProductCurrentPage = value
 }
 
 // 获取申请出库产品列表
@@ -433,9 +434,14 @@ getApplyOutProductlist()
 
 // 更新产品列表和申请出库列表第一页数据
 const changeTwoFirstPageData = () => {
-  getProductFirstPageList()
-  getApplyProductFirstPageList()
+  if (paginationData.productCurrentPage > 1) {
+    ProductCurrentChange(paginationData.productCurrentPage)
+  } else {
+    getProductFirstPageList()
+  }
+  getApplyOutProductlist()
 }
+changeTwoFirstPageData()
 </script>
 
 <style scoped lang="scss"></style>

@@ -28,14 +28,14 @@ onBeforeUnmount(() => {
 const productID = ref()
 
 bus.on('withDrawProductID', (id: number) => {
-  console.log(id)
+  // console.log(id)
   productID.value = id
 })
 
 const emit = defineEmits(['success'])
 const withDrawProductOption = async () => {
   const res = await withdrawApplyProduct(productID.value)
-  //   console.log(res)
+  // console.log(res)
   if (res.data.status === 0) {
     ElMessage({
       message: res.data.message,

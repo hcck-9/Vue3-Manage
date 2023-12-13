@@ -33,7 +33,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布人" prop="message_publish_name">
-          <el-input v-model="messageForm.message_publish_name" />
+          <el-input v-model="messageForm.message_publish_name" disabled />
         </el-form-item>
         <el-form-item label="消息类别" prop="message_category">
           <el-select v-model="messageForm.message_category" placeholder="请选择消息类别">
@@ -47,8 +47,7 @@
           v-if="title === '发布公司公告' || title === '编辑公司公告'"
         >
           <el-select v-model="messageForm.message_receipt_object" placeholder="请选择接收部门">
-            <el-option label="1" value="1" />
-            <el-option label="2" value="2" />
+            <el-option v-for="item in allDepartmentData" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item
@@ -91,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, reactive, ref, shallowRef, toRaw, unref } from 'vue'
+import { nextTick, onBeforeUnmount, reactive, ref, shallowRef, toRaw } from 'vue'
 
 import '@wangeditor/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
@@ -118,12 +117,17 @@ onBeforeUnmount(() => {
   editor.destroy()
 })
 
-// 部门数据
+// 发送部门数据
 const departmentData = ref([])
+// 接收部门数据
+const allDepartmentData = ref([])
+
 const returnDepartment = async () => {
-  // departmentData.value = await getDepartment()
   const res = await getDepartment()
   departmentData.value = res.data
+  const data = res.data.slice()
+  data.push('全体成员')
+  allDepartmentData.value = data
 }
 returnDepartment()
 
@@ -144,7 +148,7 @@ const messageForm = reactive<messageData>({
   id: null,
   message_title: '',
   message_publish_department: '',
-  message_publish_name: '',
+  message_publish_name: localStorage.getItem('name'),
   message_category: '',
   message_receipt_object: '',
   message_level: '',
@@ -179,7 +183,7 @@ bus.on('createMessageName', (name: string) => {
 
 bus.on('editMessage', async (row: any) => {
   row = toRaw(row)
-  console.log(row)
+  // console.log(row)
   await nextTick(() => {
     title.value = '编辑' + row.message_category
     messageForm.id = row.id

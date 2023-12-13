@@ -50,15 +50,15 @@
               <el-menu-item index="recycle">回收站</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-menu-item index="6">
+          <el-menu-item index="file">
             <el-icon><MessageBox /></el-icon>
-            <span>合同管理</span>
+            <span>文件管理</span>
           </el-menu-item>
-          <el-menu-item index="7">
+          <el-menu-item index="operation_log">
             <el-icon><DocumentCopy /></el-icon>
             <span>操作日志</span>
           </el-menu-item>
-          <el-menu-item index="8">
+          <el-menu-item index="login_log">
             <el-icon><Notebook /></el-icon>
             <span>登录日志</span>
           </el-menu-item>
@@ -206,16 +206,15 @@ const back = () => {
   cursor: pointer;
 }
 
-// :deep(.el-aside) {
-//   overflow: hidden auto;
-//   scrollbar-width: thin; /* 定义滚动条的宽度 */
-//   scrollbar-color: transparent transparent; /* 定义滚动条的颜色 */
-// }
+:deep(.el-aside) {
+  scrollbar-width: thin; /* 定义滚动条的宽度 */
+  scrollbar-color: transparent transparent; /* 定义滚动条的颜色 */
+}
 
-// /* 隐藏滚动条 */
-// :deep(.el-aside::-webkit-scrollbar) {
-//   width: 0; /* 定义滚动条宽度 */
-//   height: 0;
-//   background-color: transparent; /* 滚动条背景颜色 */
-// }
+/* 隐藏滚动条 */
+:deep(.el-menu::-webkit-scrollbar) {
+  width: 0; /* 定义滚动条宽度 */
+  height: 0;
+  background-color: transparent; /* 滚动条背景颜色 */
+}
 </style>

@@ -15,7 +15,7 @@ import { onBeforeUnmount, ref } from 'vue'
 const centerDialogVisible = ref(false)
 
 import { bus } from '@/utils/mitt.js'
-
+import { tracking } from '@/utils/operation.js'
 import { changeIdentityToUser, deleteUser } from '@/api/userinfo.js'
 // 消息提示
 import { ElMessage } from 'element-plus'
@@ -52,6 +52,12 @@ const deleteADminUser = async () => {
       })
       centerDialogVisible.value = false
       emit('success')
+      tracking(
+        '管理员',
+        localStorage.getItem('name'),
+        '管理员账号' + userAccount.value + '进行了降级',
+        '高级'
+      )
     } else {
       ElMessage.error(res.data.message)
     }
@@ -66,6 +72,12 @@ const deleteADminUser = async () => {
       })
       centerDialogVisible.value = false
       bus.emit('offDialog', 1)
+      tracking(
+        '管理员',
+        localStorage.getItem('name'),
+        '用户账号' + userAccount.value + '进行了删除',
+        '高级'
+      )
     } else {
       ElMessage.error(res.data.message)
     }
