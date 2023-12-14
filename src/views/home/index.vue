@@ -30,32 +30,64 @@
       <!-- 公司公告 -->
       <div class="company-notice">
         <span class="title">公司公告</span>
-        <el-table :data="tableData" style="width: 100%" :show-header="false">
-          <el-table-column prop="date" label="Date" width="180" />
-          <el-table-column prop="name" label="Name" width="180" />
-          <el-table-column prop="address" label="Address" />
+        <el-table
+          :data="companyTableData"
+          style="width: 100%"
+          :show-header="false"
+          @row-dblclick="openCompany"
+        >
+          <el-table-column prop="message_title" label="公告主题" />
+          <el-table-column prop="message_level" label="公告等级" width="100">
+            <template #default="{ row }">
+              <el-tag class="ml-2" v-if="row.message_level === '一般'">一般</el-tag>
+              <el-tag class="ml-2" type="success" v-else-if="row.message_level === '重要'"
+                >重要</el-tag
+              >
+              <el-tag class="ml-2" type="warning" v-else-if="row.message_level === '必要'"
+                >必要</el-tag
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="message_publish_department" label="公告发布部门" />
+          <el-table-column property="message_publish_time" label="发布时间">
+            <template #default="{ row }">
+              <div>{{ row.message_publish_time?.slice(0, 10) }}</div>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <!-- 系统消息 -->
       <div class="system-message">
         <span class="title">系统消息</span>
-        <el-table :data="tableData" style="width: 100%" :show-header="false">
-          <el-table-column prop="date" label="Date" width="180" />
-          <el-table-column prop="name" label="Name" width="180" />
-          <el-table-column prop="address" label="Address" />
+        <el-table
+          :data="systemTableData"
+          style="width: 100%"
+          :show-header="false"
+          @row-dblclick="openSystem"
+        >
+          <el-table-column prop="message_title" label="消息主题" />
+          <el-table-column property="message_publish_time" label="发布时间">
+            <template #default="{ row }">
+              <div>{{ row.message_publish_time?.slice(0, 10) }}</div>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </div>
   </div>
   <introduce ref="intro"></introduce>
+  <commonmsg ref="commonMsg"></commonmsg>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 import breadCrumb from '@/components/bread-crumb.vue'
 import { getAllSwiper, getAllCompanyIntroduce } from '@/api/setting.js'
+import { companyMessageList, systemMessageList } from '@/api/message.js'
+
 import { bus } from '@/utils/mitt.js'
 import introduce from './components/introduce.vue'
+import commonmsg from '@/components/common_msg.vue'
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
@@ -91,7 +123,38 @@ const openIntroduce = (id: number) => {
   intro.value.open()
 }
 
-const tableData = []
+// 弹窗
+const commonMsg = ref()
+// 获取弹窗
+const openCompany = (row: any) => {
+  row = toRaw(row)
+  // 第一个参数是标记，第二个是参数
+  bus.emit('msgCompanyRow', row)
+  commonMsg.value.open()
+}
+// 获取弹窗
+const openSystem = (row: any) => {
+  row = toRaw(row)
+  // 第一个参数是标记，第二个是参数
+  bus.emit('msgSystemRow', row)
+  commonMsg.value.open()
+}
+
+const companyTableData = ref([])
+
+const getCompanyTableData = async () => {
+  const res = await companyMessageList()
+  companyTableData.value = res.data
+}
+getCompanyTableData()
+
+const systemTableData = ref([])
+const getSystemTableData = async () => {
+  const res = await systemMessageList()
+  // console.log(res.data)
+  systemTableData.value = res.data
+}
+getSystemTableData()
 </script>
 
 <style scoped lang="scss">

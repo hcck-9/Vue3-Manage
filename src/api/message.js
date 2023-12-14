@@ -100,14 +100,13 @@ export const getMessage = (message_publish_department) => {
 }
 
 // 更新点击率
-export const updateClick = (data) => {
-  const { message_click_number, id } = data
+export const updateClick = (message_click_number, id) => {
   return instance({
-    url: '/msg/getMessage',
+    url: '/msg/updateClick',
     method: 'POST',
     data: {
-      id,
-      message_click_number
+      message_click_number,
+      id
     }
   })
 }

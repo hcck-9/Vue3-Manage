@@ -99,7 +99,7 @@ import { useRouter } from 'vue-router'
 // useRouter
 const router = useRouter()
 // 引入store
-import { useUserInfoStore } from '../../store/userinfo'
+import { useUserInfoStore } from '@/store/userinfo.js'
 const store = useUserInfoStore()
 
 const activeName = ref('login')
@@ -148,10 +148,11 @@ const Login = async () => {
       type: 'success'
     })
     const { token } = res.data
-    const { id, name, account, email } = res.data.results
+    const { id, name, account, email, department } = res.data.results
     localStorage.setItem('id', id)
     localStorage.setItem('token', token)
     localStorage.setItem('name', name)
+    localStorage.setItem('department', department)
     await loginLog(account, name, email)
     store.userInfor(id)
     // 跳转

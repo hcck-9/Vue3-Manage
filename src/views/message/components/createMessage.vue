@@ -100,10 +100,14 @@ import { bus } from '@/utils/mitt.js'
 
 import { publishMessage, editMessage } from '@/api/message.js'
 import { getDepartment } from '@/api/setting.js'
+import { changeUserReadList } from '@/api/dep_msg.js'
 
 const dialogFormVisible = ref(false)
 // 消息提示
 import { ElMessage } from 'element-plus'
+// 引入store
+import { useMsg } from '@/store/message.js'
+const messageStore = useMsg()
 
 // 取消订阅/监听
 onBeforeUnmount(() => {
@@ -260,6 +264,8 @@ const createAndEidtMessage = async (formEl: FormInstance | undefined) => {
       if (title.value == '发布公司公告') {
         const res = await publishMessage(messageForm)
         // console.log(res)
+        await changeUserReadList(res.data.id, res.data.department)
+        messageStore.returnReadList(localStorage.getItem('id'))
         if (res.data.status === 0) {
           ElMessage({
             message: res.data.message,

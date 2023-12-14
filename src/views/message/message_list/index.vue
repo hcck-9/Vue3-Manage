@@ -144,11 +144,8 @@ import breadCrumb from '@/components/bread-crumb.vue'
 import createmessage from '../components/createMessage.vue'
 import deletemessage from '../components/deleteMessage.vue'
 import { bus } from '@/utils/mitt.js'
-// 消息提示
-import { ElMessage } from 'element-plus'
+
 import {
-  companyMessageList,
-  systemMessageList,
   searchMessageBydepartment,
   searchMessageByLevel,
   getCompanyMessageLength,

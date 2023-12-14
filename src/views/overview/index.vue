@@ -361,7 +361,7 @@ const massageAllDay = async () => {
     },
     series: [
       {
-        data: data.number,
+        data: data.number.reverse(),
         type: 'line'
       }
     ]

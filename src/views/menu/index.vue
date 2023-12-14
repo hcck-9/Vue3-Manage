@@ -72,7 +72,13 @@
         <el-header>
           <span class="header-left-content">尊敬的 {{ userInfoStore.name }} 欢迎您登录本系统</span>
           <div class="header-right-content">
-            <el-icon><Message /></el-icon>
+            <el-badge
+              :is-dot="messageStore.read_list.length > 0 ? true : false"
+              class="item"
+              @click="openMsjDialog"
+            >
+              <el-icon><Message /></el-icon>
+            </el-badge>
             <div class="block">
               <el-avatar :size="24" :src="userInfoStore.imageUrl" />
             </div>
@@ -94,10 +100,11 @@
       </el-container>
     </el-container>
   </div>
+  <depmsj ref="depMsgRef"></depmsj>
 </template>
 
 <script setup lang="ts">
-// import { reactive } from 'vue'
+import { ref, toRaw } from 'vue'
 // 消息提示
 import { ElMessage } from 'element-plus'
 // 路由跳转
@@ -106,8 +113,16 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // 引入store
-import { useUserInfoStore } from '../../store/userinfo'
+import { useUserInfoStore } from '@/store/userinfo.js'
 const userInfoStore = useUserInfoStore()
+import { Message } from '@element-plus/icons-vue'
+import depmsj from '@/components/department_msg.vue'
+
+// 引入store
+import { useMsg } from '@/store/message.js'
+const messageStore = useMsg()
+
+// console.log(toRaw(messageStore.read_list))
 
 // 退出登录
 const back = () => {
@@ -117,6 +132,27 @@ const back = () => {
     message: '退出登录成功',
     type: 'success'
   })
+}
+
+// // 是否有未读消息
+// const isRead = ref(false)
+// const getUserReadList = async () => {
+//   const res = await getReadListAndStatus(localStorage.getItem('id'))
+//   if (res.data[0].read_list != null && JSON.parse(res.data[0].read_list).length > 0) {
+//     isRead.value = true
+//   } else {
+//     isRead.value = false
+//   }
+// }
+// getUserReadList()
+
+// 消息弹窗
+const depMsgRef = ref()
+// 获取弹窗
+const openMsjDialog = (id?: number) => {
+  // 第一个参数是标记，第二个是参数
+  // bus.emit('introduce', id)
+  depMsgRef.value.open()
 }
 </script>
 

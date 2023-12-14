@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
+import { changeUserReadList, changeUserReadListButDelete } from '@/api/dep_msg.js'
 const centerDialogVisible = ref(false)
 
 import { bus } from '@/utils/mitt.js'
@@ -20,6 +21,9 @@ import { bus } from '@/utils/mitt.js'
 import { firstDelete, recover, deleteMessage } from '@/api/message.js'
 // 消息提示
 import { ElMessage } from 'element-plus'
+// 引入store
+import { useMsg } from '@/store/message.js'
+const messageStore = useMsg()
 
 // 取消订阅/监听
 onBeforeUnmount(() => {
@@ -55,6 +59,8 @@ const operationMessage = async () => {
     const res = await firstDelete(messageId.value)
     // console.log(res)
     if (res.data.status === 0) {
+      await changeUserReadListButDelete(messageId.value, department.value)
+      messageStore.returnReadList(localStorage.getItem('id'))
       ElMessage({
         message: res.data.message,
         type: 'success'
@@ -69,6 +75,8 @@ const operationMessage = async () => {
     const res = await recover(messageId.value)
     // console.log(res)
     if (res.data.status === 0) {
+      await changeUserReadList(messageId.value, department.value)
+      messageStore.returnReadList(localStorage.getItem('id'))
       ElMessage({
         message: res.data.message,
         type: 'success'
