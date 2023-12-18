@@ -13,6 +13,8 @@
             placeholder="输入账号进行搜索"
             :prefix-icon="Search"
             @change="searchAdmin"
+            clearable
+            @clear="clearInput"
           />
         </div>
         <div class="button-wrapped">
@@ -66,8 +68,6 @@ import { reactive, ref } from 'vue'
 import breadCrumb from '@/components/bread-crumb.vue'
 
 import { Search } from '@element-plus/icons-vue'
-// 消息提示
-import { ElMessage } from 'element-plus'
 
 import create from '../components/createAdmin.vue'
 import edit from '../components/editAdmin.vue'
@@ -89,13 +89,13 @@ let tableData = ref([])
 const account = ref()
 const identity = ref('消息管理员')
 const searchAdmin = async () => {
-  if (account.value !== '') {
-    const res = await searchUser(account.value, identity.value)
-    tableData.value = res.data
-  } else {
-    getFirstPageData()
-    paginationData.currentPage = 1
-  }
+  const res = await searchUser(account.value, identity.value)
+  tableData.value = res.data
+  paginationData.pageCount = 1
+}
+
+const clearInput = () => {
+  paginationChange(paginationData.currentPage)
 }
 
 // 创建管理员

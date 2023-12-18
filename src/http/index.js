@@ -1,4 +1,6 @@
 import axios from 'axios'
+// 消息提示
+import { ElMessage } from 'element-plus'
 
 const instance = axios.create({
   // back URL地址
@@ -24,6 +26,14 @@ instance.interceptors.response.use(
   function (response) {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
+    // if (response.data.status || response.data.message) {
+    //   ElMessage({
+    //     message: response.data.message,
+    //     type: 'success'
+    //   })
+    // } else {
+    //   ElMessage.error(response.data.message)
+    // }
     return response
   },
   function (error) {

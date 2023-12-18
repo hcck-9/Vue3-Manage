@@ -263,15 +263,15 @@ const paginationData = reactive({
 const getCompanyMessagelength = async (num?: number) => {
   const res = await getCompanyMessageLength()
   paginationData.companyTotal = res.data.length
-  paginationData.companyPageCount = Math.ceil(paginationData.companyTotal / 10)
+  paginationData.companyPageCount = Math.ceil(paginationData.companyTotal / 9)
   if (num === 1) {
     paginationData.companyCurrentPage = paginationData.companyCurrentPage
   }
 }
-getCompanyMessagelength()
 
 // 获取公司公告第一页内容
 const getCompanyMessageFirstPageList = async () => {
+  getCompanyMessagelength()
   const res = await returnCompanyListData(1)
   companyTableData.value = res.data
 }
@@ -287,15 +287,15 @@ const companyCurrentChange = async (value: number) => {
 const getSystemMessagelength = async (num?: number) => {
   const res = await getSystemMessageLength()
   paginationData.systemTotal = res.data.length
-  paginationData.systemCount = Math.ceil(paginationData.systemTotal / 10)
+  paginationData.systemCount = Math.ceil(paginationData.systemTotal / 9)
   if (num === 1) {
     paginationData.systemCurrentPage = paginationData.systemCurrentPage
   }
 }
-getSystemMessagelength()
 
 // 获取系统消息第一页内容
 const getSystemMessageFirstPageList = async () => {
+  getSystemMessagelength()
   const res = await returnSystemListData(1)
   systemMessageData.value = res.data
 }

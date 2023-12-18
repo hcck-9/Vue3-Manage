@@ -13,6 +13,8 @@
             placeholder="输入账号进行搜索"
             :prefix-icon="Search"
             @change="searchAdmin"
+            clearable
+            @clear="clearInput"
           />
         </div>
         <div class="button-wrapped">
@@ -96,13 +98,13 @@ let tableData = ref([])
 const account = ref()
 const identity = ref('产品管理员')
 const searchAdmin = async () => {
-  if (account.value !== '') {
-    const res = await searchUser(account.value, identity.value)
-    tableData.value = res.data
-  } else {
-    getFirstPageData()
-    paginationData.currentPage = 1
-  }
+  const res = await searchUser(account.value, identity.value)
+  tableData.value = res.data
+  paginationData.pageCount = 1
+}
+
+const clearInput = () => {
+  paginationChange(paginationData.currentPage)
 }
 
 // 创建管理员

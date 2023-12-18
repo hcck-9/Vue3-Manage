@@ -22,7 +22,7 @@
           <el-input v-model="formData.product_single_price" disabled />
         </el-form-item>
         <el-form-item label="出库申请人" prop="product_out_apply_person">
-          <el-input v-model="formData.product_out_apply_person" />
+          <el-input v-model="formData.product_out_apply_person" disabled />
         </el-form-item>
         <el-form-item label="出库备注" prop="in_memo">
           <el-input type="textarea" v-model="formData.audit_memo" />
@@ -32,7 +32,13 @@
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="applyProductOption(applyProductRef)"> 确定 </el-button>
+        <el-button
+          type="primary"
+          @click="applyProductOption(applyProductRef)"
+          :disabled="formData.product_out_number > formData.product_in_warehouse_number"
+        >
+          确定
+        </el-button>
       </span>
     </template>
   </el-dialog>
@@ -59,7 +65,7 @@ onBeforeUnmount(() => {
 interface productData {
   id: number | null
   product_out_id: number | null
-  product_out_number: string
+  product_out_number: number | null
   product_out_apply_person: string
   audit_memo: string
   product_in_warehouse_number: number | null
@@ -72,8 +78,8 @@ const applyProductRef = ref<FormInstance>()
 const formData = reactive<productData>({
   id: null,
   product_out_id: null,
-  product_out_number: '',
-  product_out_apply_person: '',
+  product_out_number: null,
+  product_out_apply_person: localStorage.getItem('name'),
   audit_memo: '',
   product_in_warehouse_number: null,
   product_name: '',

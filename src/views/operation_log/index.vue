@@ -122,8 +122,6 @@ getLoglength()
 // 获取文件列表第一页内容
 const getLogFirstPageList = async () => {
   const res = await returnOperationListData(1)
-  console.log(res)
-
   tableData.value = res.data
 }
 getLogFirstPageList()

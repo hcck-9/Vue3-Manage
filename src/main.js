@@ -26,4 +26,10 @@ app.use(ElementPlus, {
   locale: zhCn
 })
 
-app.use(router).use(pinia).mount('#app')
+app.use(pinia)
+
+import { useMenu } from '@/store/menu.js'
+const menuStore = useMenu()
+menuStore.addRouter()
+
+app.use(router).mount('#app')

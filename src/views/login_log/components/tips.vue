@@ -12,20 +12,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { clearLoginLogList } from '@/api/log.js'
-import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['success'])
 
 const clearList = async () => {
   const res = await clearLoginLogList()
   if (res.data.status == 0) {
-    ElMessage({
-      message: '清空列表成功',
-      type: 'success'
-    })
     emit('success')
-  } else {
-    ElMessage.error('清空列表失败')
   }
   dialogFormVisible.value = false
 }

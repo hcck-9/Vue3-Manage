@@ -17,12 +17,13 @@ export default defineConfig({
       symbolId: 'icon-[dir]-[name]'
     })
   ],
-  pluginOptions: {
-    'style-resources-loader': {
-      preProcessor: 'scss',
-      patterns: []
-    }
-  },
+  // vite 自动识别 scss
+  // pluginOptions: {
+  //   'style-resources-loader': {
+  //     preProcessor: 'scss',
+  //     patterns: []
+  //   }
+  // },
   resolve: {
     alias: {
       // 设置 @ 指向 SRC 目录

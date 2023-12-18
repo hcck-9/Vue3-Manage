@@ -24,9 +24,6 @@ export const useMsg = defineStore(
     getters: {}
   },
   {
-    persist: {
-      // 存储全部数据
-      enabled: true
-    }
+    persist: true
   }
 )

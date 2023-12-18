@@ -16,8 +16,6 @@ const centerDialogVisible = ref(false)
 import { bus } from '@/utils/mitt.js'
 
 import { deleteFile } from '@/api/file.js'
-// 消息提示
-import { ElMessage } from 'element-plus'
 
 // 取消订阅/监听
 onBeforeUnmount(() => {
@@ -43,14 +41,8 @@ const operationFiles = async () => {
     const res = await deleteFile(fileId.value, file_name.value)
     // console.log(res)
     if (res.data.status === 0) {
-      ElMessage({
-        message: res.data.message,
-        type: 'success'
-      })
       centerDialogVisible.value = false
       emit('success')
-    } else {
-      ElMessage.error(res.data.message)
     }
   }
 }

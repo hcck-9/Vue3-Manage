@@ -13,6 +13,8 @@
             placeholder="输入账号进行搜索"
             :prefix-icon="Search"
             @change="searchAdmin"
+            clearable
+            @clear="clearInput"
           />
         </div>
         <div class="button-wrapped">
@@ -96,6 +98,10 @@ const searchAdmin = async () => {
     getFirstPageData()
     paginationData.currentPage = 1
   }
+}
+
+const clearInput = () => {
+  paginationChange(paginationData.currentPage)
 }
 
 // 创建管理员

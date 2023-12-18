@@ -70,6 +70,17 @@ import { updateClick } from '@/api/message.js'
 import { useMsg } from '@/store/message.js'
 const messageStore = useMsg()
 
+const dialogVisible = ref(false)
+
+const tableData = ref([])
+
+const messageInfo = reactive({
+  message_title: '',
+  message_content: ''
+})
+// 未读信息
+const readList = ref([])
+
 const getUserDepMsg = async () => {
   const department = localStorage.getItem('department')
   const id = localStorage.getItem('id')
@@ -78,14 +89,15 @@ const getUserDepMsg = async () => {
     const res2 = await getDepartmentMsgList(department)
     tableData.value = res2.data
     if (res.data[0].read_status === 0) {
-      const { read_list } = await getDepartmentMsg(id, department)
-      readList.value = read_list
+      const res3 = await getDepartmentMsg(id, department)
+      readList.value = res3.data.read_list
     } else {
       readList.value = JSON.parse(res.data[0].read_list)
     }
     messageStore.returnReadList(id)
   }
 }
+
 getUserDepMsg()
 
 const getDetail = async (row: any) => {
@@ -103,16 +115,6 @@ const idInList = (id: number) => {
   if (readList.value.indexOf(id) !== -1) return 0
   else return 1
 }
-const dialogVisible = ref(false)
-
-const tableData = ref([])
-
-const messageInfo = reactive({
-  message_title: '',
-  message_content: ''
-})
-// 未读信息
-const readList = ref([])
 
 // 暴露open方法
 const open = () => {

@@ -5,11 +5,11 @@ export const useUserInfoStore = defineStore(
   {
     state: () => {
       return {
-        imageUrl: '',
-        name: '',
+        imageUrl: localStorage.getItem('imageUrl'),
+        name: localStorage.getItem('name'),
         sex: '',
-        department: '',
-        identity: '',
+        department: localStorage.getItem('department'),
+        identity: localStorage.getItem('identity'),
         account: '',
         email: ''
       }

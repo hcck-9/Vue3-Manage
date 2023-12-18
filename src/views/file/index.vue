@@ -77,8 +77,6 @@ import type { UploadProps, UploadUserFile } from 'element-plus'
 import { updateDownload, bindFileAndUser, fileListLength, returnFilesListData } from '@/api/file.js'
 import { bus } from '@/utils/mitt.js'
 
-// 消息提示
-import { ElMessage } from 'element-plus'
 const fileList = ref<UploadUserFile[]>([])
 
 // 面包屑
@@ -90,9 +88,7 @@ const item = ref({
 
 const tableData = ref([])
 
-const handleExceed: UploadProps['onExceed'] = (response: any) => {
-  ElMessage.warning('最多上传三个文件！')
-}
+const handleExceed: UploadProps['onExceed'] = (response: any) => {}
 
 //把字节转换成正常文件大小
 function getfilesize(size) {
@@ -111,13 +107,8 @@ const handleSuccess = (response: any) => {
     ;(async () => {
       await bindFileAndUser(localStorage.getItem('name'), response.url)
     })()
-    ElMessage({
-      message: '上传文件成功',
-      type: 'success'
-    })
+
     getFileFirstPageList()
-  } else {
-    ElMessage.error('上传文件失败，请检查网络问题！')
   }
 }
 

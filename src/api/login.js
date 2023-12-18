@@ -50,3 +50,14 @@ export const resetPassword = (id, newPassword) => {
     }
   })
 }
+
+// 返回用户的路由列表，参数ID
+export const returnMenuList = (id) => {
+  return instance({
+    url: '/api/returnMenuList',
+    method: 'POST',
+    data: {
+      id
+    }
+  })
+}

@@ -342,12 +342,14 @@ const applyTableData = ref([])
 const searchProduct = async () => {
   const res = await searchProductForId(productId.value)
   tableData.value = res.data
+  paginationData.productPageCount = 1
 }
 
 // 通过出库申请编号对产品进行搜索
 const searchApplyProduct = async () => {
   const res = await searchProductForApplyId(productOutId.value)
   applyTableData.value = res.data
+  paginationData.applyProductCount = 1
 }
 
 // 分页数据
@@ -375,11 +377,11 @@ const getProductListlength = async (num?: number) => {
     paginationData.productCurrentPage = paginationData.productCurrentPage
   }
 }
-getProductListlength()
 
 // 获取产品列表第一页内容
 // getProductFirstPageList
 const getProductFirstPageList = async () => {
+  getProductListlength()
   paginationData.productCurrentPage = 1
   const res = await returnProductListData(1)
   tableData.value = res.data

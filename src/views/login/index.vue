@@ -91,7 +91,7 @@
 import { ref, reactive } from 'vue'
 import forgetPassword from './components/forget_password.vue'
 // 导入登录注册接口
-import { login, register } from '@/api/login.js'
+import { login, register, returnMenuList } from '@/api/login.js'
 import { loginLog } from '@/api/log.js'
 // 消息提示
 import { ElMessage } from 'element-plus'
@@ -101,6 +101,8 @@ const router = useRouter()
 // 引入store
 import { useUserInfoStore } from '@/store/userinfo.js'
 const store = useUserInfoStore()
+import { useMenu } from '@/store/menu.js'
+const menuStore = useMenu()
 
 const activeName = ref('login')
 
@@ -148,11 +150,17 @@ const Login = async () => {
       type: 'success'
     })
     const { token } = res.data
-    const { id, name, account, email, department } = res.data.results
+    const { id, name, account, email, department, image_url, identity } = res.data.results
     localStorage.setItem('id', id)
     localStorage.setItem('token', token)
     localStorage.setItem('name', name)
     localStorage.setItem('department', department)
+    localStorage.setItem('imageUrl', image_url)
+    localStorage.setItem('identity', identity)
+    const routerList = await returnMenuList(id)
+
+    menuStore.setRouter(routerList.data)
+
     await loginLog(account, name, email)
     store.userInfor(id)
     // 跳转

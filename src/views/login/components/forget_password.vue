@@ -100,10 +100,6 @@ const verifyAccountAndEmail = async (formEl: FormInstance | undefined) => {
       const res = await veryfy(forgetPasswordForm)
       // console.log(res)
       if (res.data.status === 0) {
-        ElMessage({
-          message: res.data.message,
-          type: 'success'
-        })
         // 设置user ID
         localStorage.setItem('user_id', res.data.id)
         state.forgetPasswordDialog = false
@@ -122,15 +118,9 @@ const changePasswordInLogin = async (formEl: FormInstance | undefined) => {
       if (forgetPasswordForm.password === forgetPasswordForm.repassword) {
         const user_id = localStorage.getItem('user_id')
         const res = await resetPassword(user_id, forgetPasswordForm.password)
-        console.log(res)
+        // console.log(res)
         if (res.data.status === 0) {
-          ElMessage({
-            message: res.data.message,
-            type: 'success'
-          })
           state.changePasswordDialog = false
-        } else {
-          ElMessage.error(res.data.message)
         }
       } else {
         ElMessage.error('两次密码输入不一致')

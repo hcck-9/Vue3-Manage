@@ -54,8 +54,6 @@ import breadCrumb from '@/components/bread-crumb.vue'
 import { searchLoginLogList, loginLogListLength, returnLoginListData } from '@/api/log.js'
 import tips from './components/tips.vue'
 import { Search } from '@element-plus/icons-vue'
-// 消息提示
-import { ElMessage } from 'element-plus'
 
 // 面包屑
 const breadcrumb = ref()
