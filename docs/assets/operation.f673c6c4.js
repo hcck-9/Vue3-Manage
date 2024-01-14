@@ -1,0 +1,1 @@
+import{f}from"./log.43245a8a.js";const s=async(a,i,n,c,o)=>{if(a=="\u7BA1\u7406\u5458"){let t=`\u5BF9'${n}'\u64CD\u4F5C`;await f(i,t,c)}if(a=="\u4EA7\u54C1"){let t=`\u5BF9\u4EA7\u54C1'${n}'\u8FDB\u884C\u4E86\u5BA1\u6838\u64CD\u4F5C\uFF0C\u5BA1\u6838\u7ED3\u679C\u4E3A'${o}'`;await f(i,t,c)}};export{s as t};

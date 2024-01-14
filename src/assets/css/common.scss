@@ -72,6 +72,11 @@
 
           .search-wrapped {
             display: flex;
+            flex: 1;
+            .el-input,
+            .el-select {
+              width: 200px;
+            }
           }
           .module-common-table {
             min-height: 10px;

@@ -1,18 +1,12 @@
 {
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
-    "skipLibCheck": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "env.d.ts",
-    "src/**/*.js"
-  ],
-  "exclude": [],
-  "paths": {
-    "@/*": ["./src/*"],
-    "@": ["./src"]
+    "isolatedModules": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "Node"
   }
 }

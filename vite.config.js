@@ -10,10 +10,20 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // eslint-disable-next-line no-undef
 const pathReslove = (dir) => resolve(__dirname, dir)
 
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    }),
     createSvgIconsPlugin({
       // eslint-disable-next-line no-undef
       iconDirs: [resolve(process.cwd(), 'src/assets/svg')],
@@ -115,5 +125,9 @@ export default defineConfig({
         assetFileNames: '[ext]/[name].[hash:4].[ext]'
       }
     }
+  },
+  base: '/Vue3-Manage/',
+  build: {
+    outDir: 'docs'
   }
 })

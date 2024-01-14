@@ -113,8 +113,32 @@ import breadCrumb from '../../components/bread-crumb.vue'
 // 引入store
 import { useUserInfoStore } from '@/store/userinfo.js'
 const userInfoStore = useUserInfoStore()
-// 引入 echarts
-import * as echarts from 'echarts'
+
+import * as echarts from 'echarts/core'
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+} from 'echarts/components'
+import { PieChart, LineChart, BarChart } from 'echarts/charts'
+import { LabelLayout, UniversalTransition } from 'echarts/features'
+import { CanvasRenderer } from 'echarts/renderers'
+
+// 在use方法中列出所有需要使用的组件和图表
+echarts.use([
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  PieChart,
+  LineChart,
+  BarChart,
+  CanvasRenderer,
+  LabelLayout,
+  UniversalTransition
+])
+
 // 导入 SvgIcon
 import SvgIcon from '@/components/SvgIcon.vue'
 // 导入用户信息接口
