@@ -1,80 +1,83 @@
 <template>
   <breadCrumb ref="breadcrumb" :item="item"></breadCrumb>
   <!-- 首页 -->
-  <div class="home-wrapped">
-    <!-- 轮播图 -->
-    <div class="swiper-wrapped">
-      <el-carousel :interval="4000" indicator-position="outside" type="card" height="240px">
-        <el-carousel-item v-for="(item, index) in imageUrl" :key="index">
-          <img :src="imageUrl[index]" class="swiper" />
-        </el-carousel-item>
-      </el-carousel>
-    </div>
-    <!-- 栅格布局 -->
-    <div class="layout-wrapped">
-      <el-row :gutter="20">
-        <el-col
-          :span="6"
-          v-for="(item, index) in companyIntroduceData"
-          @click="openIntroduce(item.id)"
-        >
-          <div class="company-message-area">
-            <span>{{ item.set_name }}</span>
-            <div v-html="item.set_text" class="company-introduce"></div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-    <!-- 表格外壳 -->
-    <div class="two-table-wrapped">
-      <!-- 公司公告 -->
-      <div class="company-notice">
-        <span class="title">公司公告</span>
-        <el-table
-          :data="companyTableData"
-          style="width: 100%"
-          :show-header="false"
-          @row-dblclick="openCompany"
-        >
-          <el-table-column prop="message_title" label="公告主题" />
-          <el-table-column prop="message_level" label="公告等级" width="100">
-            <template #default="{ row }">
-              <el-tag class="ml-2" v-if="row.message_level === '一般'">一般</el-tag>
-              <el-tag class="ml-2" type="success" v-else-if="row.message_level === '重要'"
-                >重要</el-tag
-              >
-              <el-tag class="ml-2" type="warning" v-else-if="row.message_level === '必要'"
-                >必要</el-tag
-              >
-            </template>
-          </el-table-column>
-          <el-table-column prop="message_publish_department" label="公告发布部门" />
-          <el-table-column property="message_publish_time" label="发布时间">
-            <template #default="{ row }">
-              <div>{{ row.message_publish_time?.slice(0, 10) }}</div>
-            </template>
-          </el-table-column>
-        </el-table>
+  <el-scrollbar>
+    <div class="home-wrapped">
+      <!-- 轮播图 -->
+      <div class="swiper-wrapped">
+        <el-carousel :interval="4000" indicator-position="outside" type="card" height="240px">
+          <el-carousel-item v-for="(item, index) in imageUrl" :key="index">
+            <img :src="imageUrl[index]" class="swiper" />
+          </el-carousel-item>
+        </el-carousel>
       </div>
-      <!-- 系统消息 -->
-      <div class="system-message">
-        <span class="title">系统消息</span>
-        <el-table
-          :data="systemTableData"
-          style="width: 100%"
-          :show-header="false"
-          @row-dblclick="openSystem"
-        >
-          <el-table-column prop="message_title" label="消息主题" />
-          <el-table-column property="message_publish_time" label="发布时间">
-            <template #default="{ row }">
-              <div>{{ row.message_publish_time?.slice(0, 10) }}</div>
-            </template>
-          </el-table-column>
-        </el-table>
+      <!-- 栅格布局 -->
+      <div class="layout-wrapped">
+        <el-row :gutter="20">
+          <el-col
+            :span="6"
+            v-for="(item, index) in companyIntroduceData"
+            @click="openIntroduce(item.id)"
+          >
+            <div class="company-message-area">
+              <span>{{ item.set_name }}</span>
+              <div v-html="item.set_text" class="company-introduce"></div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 表格外壳 -->
+      <div class="two-table-wrapped">
+        <!-- 公司公告 -->
+        <div class="company-notice">
+          <span class="title">公司公告</span>
+          <el-table
+            :data="companyTableData"
+            style="width: 100%"
+            :show-header="false"
+            @row-dblclick="openCompany"
+          >
+            <el-table-column prop="message_title" label="公告主题" />
+            <el-table-column prop="message_level" label="公告等级" width="100">
+              <template #default="{ row }">
+                <el-tag class="ml-2" v-if="row.message_level === '一般'">一般</el-tag>
+                <el-tag class="ml-2" type="success" v-else-if="row.message_level === '重要'"
+                  >重要</el-tag
+                >
+                <el-tag class="ml-2" type="warning" v-else-if="row.message_level === '必要'"
+                  >必要</el-tag
+                >
+              </template>
+            </el-table-column>
+            <el-table-column prop="message_publish_department" label="公告发布部门" />
+            <el-table-column property="message_publish_time" label="发布时间">
+              <template #default="{ row }">
+                <div>{{ row.message_publish_time?.slice(0, 10) }}</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!-- 系统消息 -->
+        <div class="system-message">
+          <span class="title">系统消息</span>
+          <el-table
+            :data="systemTableData"
+            style="width: 100%"
+            :show-header="false"
+            @row-dblclick="openSystem"
+          >
+            <el-table-column prop="message_title" label="消息主题" />
+            <el-table-column property="message_publish_time" label="发布时间">
+              <template #default="{ row }">
+                <div>{{ row.message_publish_time?.slice(0, 10) }}</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
     </div>
-  </div>
+  </el-scrollbar>
+
   <introduce ref="intro"></introduce>
   <commonmsg ref="commonMsg"></commonmsg>
 </template>

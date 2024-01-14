@@ -93,8 +93,7 @@ import forgetPassword from './components/forget_password.vue'
 // 导入登录注册接口
 import { login, register, returnMenuList } from '@/api/login.js'
 import { loginLog } from '@/api/log.js'
-// 消息提示
-import { ElMessage } from 'element-plus'
+import newMessage from '@/utils/message.js'
 import { useRouter } from 'vue-router'
 // useRouter
 const router = useRouter()
@@ -128,16 +127,13 @@ const Register = async () => {
     const res = await register(registerData)
     // console.log(res)
     if (res.data.status === 0) {
-      ElMessage({
-        message: res.data.message,
-        type: 'success'
-      })
+      newMessage.success(res.data.message)
       activeName.value = 'login'
     } else {
-      ElMessage.error(res.data.message)
+      newMessage.error(res.data.message)
     }
   } else {
-    ElMessage.error('两次密码输入不一致')
+    newMessage.error('两次密码输入不一致')
   }
 }
 // 登录
@@ -145,10 +141,7 @@ const Login = async () => {
   const res = await login(loginData)
   // console.log(res)
   if (res.data.status === 0) {
-    ElMessage({
-      message: res.data.message,
-      type: 'success'
-    })
+    newMessage.success(res.data.message)
     const { token } = res.data
     const { id, name, account, email, department, image_url, identity } = res.data.results
     localStorage.setItem('id', id)
@@ -158,15 +151,13 @@ const Login = async () => {
     localStorage.setItem('imageUrl', image_url)
     localStorage.setItem('identity', identity)
     const routerList = await returnMenuList(id)
-
     menuStore.setRouter(routerList.data)
-
     await loginLog(account, name, email)
     store.userInfor(id)
     // 跳转
     router.push('/home')
   } else {
-    ElMessage.error(res.data.message)
+    newMessage.error(res.data.message)
   }
 }
 // 忘记密码对话框

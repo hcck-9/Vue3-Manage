@@ -19,12 +19,18 @@
     "echarts": "^5.4.3",
     "element-plus": "^2.4.2",
     "fast-glob": "^3.3.2",
+    "http-assert": "^1.5.0",
+    "imagemin-gifsicle": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mitt": "^3.0.1",
+    "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.0",
+    "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
+    "terser": "^5.26.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue": "^3.3.4",
     "vue-eslint-parser": "^9.3.2",
@@ -37,6 +43,11 @@
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
     "prettier": "^3.0.3",
-    "vite": "^2.5.2"
+    "vite": "^2.5.2",
+    "vite-plugin-compression2": "^0.11.0",
+    "vite-plugin-imagemin": "^0.6.1"
+  },
+  "resolutions": {
+    "bin-wrapper": "npm:bin-wrapper-china"
   }
 }

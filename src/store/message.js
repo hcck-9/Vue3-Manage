@@ -17,7 +17,7 @@ export const useMsg = defineStore(
         const department = localStorage.getItem('department')
         const res = await getReadListAndStatus(id)
         const res2 = await getDepartmentMsgList(department)
-        this.read_list = JSON.parse(res.data[0].read_list)
+        this.read_list = res.data ? JSON.parse(res.data[0].read_list) : []
         this.message_list = res2.data
       }
     },

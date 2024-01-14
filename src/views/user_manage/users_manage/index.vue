@@ -1,63 +1,45 @@
 <template>
   <breadCrumb ref="breadcrumb" :item="item"></breadCrumb>
-  <div class="table-wrapped">
-    <!-- 顶部 -->
-    <div class="table-top">
-      <!-- 表格顶部 -->
-      <div class="table-header">
-        <!-- 搜索框 -->
-        <div class="search-wrapped">
-          <el-input
-            v-model="account"
-            class="w-50 m-2"
-            placeholder="输入账号进行搜索"
-            :prefix-icon="Search"
-            @change="searchAdmin"
-            clearable
-            @clear="clearInput"
-          />
-        </div>
-        <div class="button-wrapped">
-          <el-button type="primary" @click="openCreate(2)">添加用户管理员</el-button>
-        </div>
-      </div>
-      <!-- 表格内容 -->
-      <div class="table-content">
-        <el-table ref="singleTableRef" :data="tableData" highlight-current-row style="width: 100%">
-          <el-table-column type="index" width="50" />
-          <el-table-column property="account" label="账号" />
-          <el-table-column property="name" label="姓名" />
-          <el-table-column property="department" label="部门" />
-          <el-table-column property="email" label="邮箱" />
-          <el-table-column property="update_time" label="更新时间">
-            <template #default="{ row }">
-              <div>{{ row.update_time?.slice(0, 10) }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template #default="{ row }">
-              <div>
-                <el-button type="success" @click="openEdit(row.id)">编辑</el-button>
-                <el-button type="danger" @click="openDelete(row.id)">删除</el-button>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </div>
-    <!-- 底部 -->
-    <div class="table-footer">
-      <el-pagination
-        :page-size="10"
-        :total="userTotal"
-        :current-page="paginationData.currentPage"
-        :page-count="paginationData.pageCount"
-        :pager-count="7"
-        layout="prev, pager, next"
-        @current-change="paginationChange"
+  <EpTable
+    :columns="userColumns"
+    :tableData="state.tableData"
+    :tableConfig="tableConfig"
+    :loading="state.loading"
+    :paginationConfig="pageConfig"
+    @current-page-change="currentPageChange"
+    stripe
+    ref="tableRef"
+  >
+    <template #searchHandle>
+      <el-input
+        v-model="account"
+        class="w-50 m-2"
+        placeholder="输入账号进行搜索"
+        :prefix-icon="Search"
+        @change="searchAdmin"
+        clearable
+        @clear="clearInput"
       />
-    </div>
-  </div>
+    </template>
+    <template #buttonHandle>
+      <el-button type="primary" @click="openCreate(2)">添加用户管理员</el-button>
+    </template>
+    <template #expand="{ props }">
+      {{ props.row }}
+    </template>
+    <template #createTime="{ scope }">
+      {{ scope.row.create_time.slice(0, 10) }}
+    </template>
+    <template #updateTime="{ scope }">
+      {{ scope.row.update_time.slice(0, 10) }}
+    </template>
+    <template #handler="{ scope }">
+      <div>
+        <el-button type="success" @click="openEdit(scope.row.id)">编辑</el-button>
+        <el-button type="danger" @click="openDelete(scope.row.id)">删除</el-button>
+      </div>
+    </template>
+  </EpTable>
   <create ref="Create" @success="getAdminlist(1)"></create>
   <edit ref="Edit" @success="getAdminlist"></edit>
   <delete-admin ref="Delete" @success="getAdminlist"></delete-admin>
@@ -68,15 +50,18 @@ import { reactive, ref } from 'vue'
 import breadCrumb from '@/components/bread-crumb.vue'
 
 import { Search } from '@element-plus/icons-vue'
-// 消息提示
-import { ElMessage } from 'element-plus'
 
 import create from '../components/createAdmin.vue'
 import edit from '../components/editAdmin.vue'
 import deleteAdmin from '../components/deleteAdmin.vue'
 
 import { bus } from '@/utils/mitt.js'
-import { getAdminList, searchUser, getAdminListLength, returnListData } from '@/api/userinfo.js'
+import { searchUser, getAdminListLength, returnListData } from '@/api/userinfo.js'
+
+import EpTable from '@/components/EpTable/index.vue'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import { userColumns } from '../user'
+
 // 面包屑
 const breadcrumb = ref()
 const item = ref({
@@ -84,8 +69,26 @@ const item = ref({
   second: '用户管理员'
 })
 
-// 表格数据
-let tableData = ref([])
+const state = reactive({
+  tableData: [],
+  loading: false,
+  locale: zhCn
+})
+
+const tableRef = ref<HTMLElement | null>(null) // 表格ref
+
+// 表格配置项
+const tableConfig = reactive({
+  showSeletion: true,
+  showHandler: true,
+  showIndexColumn: false,
+  isCheckMemory: true,
+  showExpand: true,
+  showAppend: false,
+  handlerConfig: {
+    align: 'center'
+  }
+})
 
 // 搜索框内容
 const account = ref()
@@ -93,15 +96,15 @@ const identity = ref('用户管理员')
 const searchAdmin = async () => {
   if (account.value !== '') {
     const res = await searchUser(account.value, identity.value)
-    tableData.value = res.data
+    state.tableData = res.data
   } else {
     getFirstPageData()
-    paginationData.currentPage = 1
+    pageConfig.currentPage = 1
   }
 }
 
 const clearInput = () => {
-  paginationChange(paginationData.currentPage)
+  currentPageChange(pageConfig.currentPage)
 }
 
 // 创建管理员
@@ -126,45 +129,56 @@ const openDelete = (id: number) => {
   Delete.value.open()
 }
 
-// 用户总数
-const userTotal = ref<number>()
 // 分页
-const paginationData = reactive({
+const pageConfig = reactive({
   // 总页数
   pageCount: 1,
   // 当前所处页数
-  currentPage: 1
+  currentPage: 1,
+  pageSize: 10,
+  total: 0,
+  layout: 'total, prev, pager, next, jumper',
+  small: true,
+  background: true
 })
 
 // 获取用户总数
 const getAdminListlength = async (num?: number) => {
   const res = await getAdminListLength(identity.value)
-  userTotal.value = res.data.length
-  paginationData.pageCount = Math.ceil(userTotal.value / 9)
+  pageConfig.total = res.data.length
+  pageConfig.pageCount = Math.ceil(pageConfig.total / 9)
   if (num === 1) {
-    paginationData.currentPage = paginationData.pageCount
+    pageConfig.currentPage = pageConfig.pageCount
   }
 }
 getAdminListlength()
+
 // 获取第一页内容
 const getFirstPageData = async () => {
-  const res = await returnListData(1, identity.value)
-  tableData.value = res.data
+  state.loading = true
+  try {
+    const res = await returnListData(1, identity.value)
+    state.tableData = res.data
+    state.loading = false
+  } catch (err) {}
 }
 getFirstPageData()
 
-const paginationChange = async (value: number) => {
-  const res = await returnListData(value, identity.value)
-  tableData.value = res.data
-  paginationData.currentPage = value
+const currentPageChange = async (value: number) => {
+  state.loading = true
+  try {
+    const res = await returnListData(value, identity.value)
+    state.tableData = res.data
+    pageConfig.currentPage = value
+    state.loading = false
+  } catch (err) {}
 }
 
 // 获取管理员列表
 const getAdminlist = async (num?: number) => {
   await getAdminListlength(num)
-  paginationChange(paginationData.currentPage)
+  currentPageChange(pageConfig.currentPage)
 }
-getAdminlist()
 </script>
 
 <style scoped lang="scss">

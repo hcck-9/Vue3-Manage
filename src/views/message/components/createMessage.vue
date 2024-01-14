@@ -6,7 +6,7 @@
     center
     align-center
     append-to-body
-    :destroy-on-close="true"
+    @close="closeDialog"
   >
     <div class="dialog-content">
       <el-form
@@ -109,6 +109,16 @@ import { ElMessage } from 'element-plus'
 import { useMsg } from '@/store/message.js'
 const messageStore = useMsg()
 
+const closeDialog = () => {
+  messageForm.message_title = ''
+  messageForm.message_publish_department = ''
+  messageForm.message_publish_name = localStorage.getItem('name')
+  messageForm.message_category = ''
+  messageForm.message_receipt_object = ''
+  messageForm.message_level = ''
+  messageForm.message_content = ''
+}
+
 // 取消订阅/监听
 onBeforeUnmount(() => {
   bus.all.clear()
@@ -160,17 +170,13 @@ const messageForm = reactive<messageData>({
 })
 
 const rules = reactive({
-  message_title: [{ required: true, message: '请输入公告标题', trigger: ['change', 'blur'] }],
-  message_publish_department: [
-    { required: true, message: '请选择发布部门', trigger: ['change', 'blur'] }
-  ],
-  message_publish_name: [{ required: true, message: '请输入发布人', trigger: ['change', 'blur'] }],
-  message_receipt_object: [
-    { required: true, message: '请选择的接收对象', trigger: ['change', 'blur'] }
-  ],
-  message_level: [{ required: true, message: '请选择公告等级', trigger: ['change', 'blur'] }],
-  message_content: [{ required: true, message: '请输入公告内容', trigger: ['change', 'blur'] }],
-  message_category: [{ required: true, message: '请选择公告类别', trigger: ['change', 'blur'] }]
+  message_title: [{ required: true, message: '请输入公告标题', trigger: 'blur' }],
+  message_publish_department: [{ required: true, message: '请选择发布部门', trigger: 'blur' }],
+  message_publish_name: [{ required: true, message: '请输入发布人', trigger: 'blur' }],
+  message_receipt_object: [{ required: true, message: '请选择的接收对象', trigger: 'blur' }],
+  message_level: [{ required: true, message: '请选择公告等级', trigger: 'blur' }],
+  message_content: [{ required: true, message: '请输入公告内容', trigger: 'blur' }],
+  message_category: [{ required: true, message: '请选择公告类别', trigger: 'blur' }]
 })
 
 // 标题

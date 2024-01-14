@@ -8,9 +8,9 @@ export const useMenu = defineStore(
     const menuData = ref([])
     // 设置动态路由
     const setRouter = (arr) => {
+      menuData.value = arr
       function compilerMenu(arr) {
         if (!arr) return
-        menuData.value = arr
         arr.forEach((item) => {
           let rts = {
             name: item.name,
@@ -18,10 +18,12 @@ export const useMenu = defineStore(
             meta: item.meta,
             component: item.component
           }
-          if (item.children && item.children.length) {
-            compilerMenu(item.children)
+          if (item.group) {
+            for (const child of item.group) {
+              compilerMenu(child.children)
+            }
           }
-          if (!item.children) {
+          if (!item.group) {
             let path = loadComponents(item.component)
             rts.component = path
             router.addRoute('menu', rts)

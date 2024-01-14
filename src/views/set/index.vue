@@ -131,12 +131,9 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="其他设置" name="fourth">
+        <el-tab-pane label="其他设置" name="fourth" v-if="userInfoStore.identity !== '用户'">
           <div class="other-set">
-            <div
-              class="department-set"
-              v-if="userInfoStore.identity !== '用户管理员' || userInfoStore.identity === '用户'"
-            >
+            <div class="department-set" v-if="userInfoStore.identity === '超级管理员'">
               <span>部门设置</span>
               <el-tag
                 v-for="tag in dynamicTags"

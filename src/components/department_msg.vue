@@ -88,11 +88,13 @@ const getUserDepMsg = async () => {
     const res = await getReadListAndStatus(id)
     const res2 = await getDepartmentMsgList(department)
     tableData.value = res2.data
-    if (res.data[0].read_status === 0) {
-      const res3 = await getDepartmentMsg(id, department)
-      readList.value = res3.data.read_list
-    } else {
-      readList.value = JSON.parse(res.data[0].read_list)
+    if (res.data && res.data.length > 0) {
+      const readStatus = res.data[0].read_status
+      const readListData =
+        readStatus === 0
+          ? (await getDepartmentMsg(id, department)).data.read_list
+          : JSON.parse(res.data[0].read_list)
+      readList.value = readListData
     }
     messageStore.returnReadList(id)
   }
